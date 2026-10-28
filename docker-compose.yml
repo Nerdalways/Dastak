@@ -1,50 +1,21 @@
-version: '3.8'
-
 services:
-  dastak_postgis:
-    image: postgis/postgis:15-3.3
-    container_name: dastak_postgis
-    environment:
-      POSTGRES_USER: dastak_user
-      POSTGRES_PASSWORD: dastak_secure_password_2026
-      POSTGRES_DB: dastak_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgis_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dastak_user -d dastak_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-  dastak_redis:
-    image: redis:7-alpine
-    container_name: dastak_redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-
-  dastak_api:
-    build:
-      context: ./dastak
-      dockerfile: Dockerfile
-    container_name: dastak_api
-    depends_on:
-      dastak_postgis:
-        condition: service_healthy
-      dastak_redis:
-        condition: service_started
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://dastak_user:dastak_secure_password_2026@dastak_postgis:5432/dastak_db
-      - REDIS_URL=redis://dastak_redis:6379/0
-      - GATE_PASS_SECRET=DASTAK_RWA_SECURE_HMAC_KEY_2026
+  web:
+    build: .
+    container_name: dastak_fastapi_app
     ports:
       - "8000:8000"
-    volumes:
-      - ./dastak/frontend:/app/frontend
+    environment:
+      - PORT=8000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SECRET_KEY=dastak_secret_key_2026_seva_challenge
+    depends_on:
+      - redis
+    restart: always
 
-volumes:
-  postgis_data:
-  redis_data:
+  redis:
+    image: redis:7-alpine
+    container_name: dastak_redis_cache
+    ports:
+      - "6379:6379"
+    restart: always
