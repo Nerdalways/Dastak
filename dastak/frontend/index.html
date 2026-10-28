@@ -1,393 +1,369 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-[#FAFAF9]">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dastak • Neighborhood Transit | दस्तक</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .serif-title { font-family: 'Rozha One', serif; }
-    .cinzel { font-family: 'Cinzel', serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dastak • Resident Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
-<body class="min-h-full flex flex-col justify-between text-[#1C1917] antialiased selection:bg-[#E7E5E4]">
+<body class="bg-[#F9F8F6] min-h-screen text-stone-900 font-sans pb-12 antialiased">
 
-  <!-- TOP EDITORIAL HEADER -->
-  <header class="border-b border-[#E7E5E4] bg-white sticky top-0 z-50">
-    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
-        <h1 class="serif-title text-2xl tracking-wide text-[#1C1917]">दस्तक</h1>
-        <span class="cinzel text-xs font-bold tracking-widest text-[#78716C] ml-1 pt-1">DASTAK</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button id="langToggle" onclick="toggleLanguage()" class="text-xs font-semibold px-2.5 py-1 border border-[#D6D3D1] rounded bg-[#FAFAF9] text-[#44403C] hover:bg-[#F5F5F4] transition-all">
-          हिन्दी
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- HYDRATED ZONE STATUS BAR -->
-  <div class="bg-[#F5F5F4] border-b border-[#E7E5E4]">
-    <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between text-xs text-[#57534E]">
-      <span class="flex items-center space-x-1.5 font-medium">
-        <svg class="w-3.5 h-3.5 text-[#78716C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-        <span id="zoneIndicator">Zone: Rohini Sector 9</span>
-      </span>
-      <span id="txt-silent-badge" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-        0 dB Silent
-      </span>
-    </div>
-  </div>
-
-  <!-- AUDIO EARCON INITIALIZER / PERMISSION BANNER -->
-  <div id="audioBanner" class="bg-amber-50 border-b border-amber-200 px-4 py-2.5">
-    <div class="max-w-md mx-auto flex items-center justify-between">
-      <div class="text-xs text-amber-900 leading-tight">
-        <strong id="audioTextHeader">Enable Arrival Chimes</strong><br>
-        <span id="audioTextSub" class="text-[11px] text-amber-700">Tap to hear soft bell alerts when carts enter</span>
-      </div>
-      <button onclick="unlockAndPlayEarcon()" id="btn-audio-listen" class="text-xs font-semibold bg-amber-900 text-white px-3 py-1.5 rounded shadow-sm hover:bg-amber-800 active:scale-95 transition-all">
-        Listen 🔔
-      </button>
-    </div>
-  </div>
-
-  <!-- FEED TABS (DUAL MODE) -->
-  <main class="max-w-md mx-auto w-full px-4 pt-4 pb-20 flex-1">
-    <div class="grid grid-cols-2 gap-1 p-1 bg-[#E7E5E4] rounded-lg mb-4 text-xs font-semibold">
-      <button id="tabDoorstep" onclick="switchTab('doorstep')" class="py-2 text-center rounded-md bg-white shadow-sm text-[#1C1917] transition-all">
-        <span id="txt-tab-doorstep-title">Doorstep Arrivals</span>
-        <span id="txt-tab-doorstep-sub" class="text-[10px] text-emerald-600 block font-normal">Live Carts</span>
-      </button>
-      <button id="tabStatic" onclick="switchTab('static')" class="py-2 text-center rounded-md text-[#78716C] hover:text-[#1C1917] transition-all">
-        <span id="txt-tab-static-title">Walk-In Stalls & Techs</span>
-        <span id="txt-tab-static-sub" class="text-[10px] text-[#A8A29E] block font-normal">Fixed & On-Campus</span>
-      </button>
-    </div>
-
-    <!-- TAB 1: DOORSTEP ARRIVALS (ROAMING CARTS) -->
-    <div id="doorstepSection" class="space-y-3">
-      <!-- DYNAMIC CART CONTAINER -->
-      <div id="liveCartsContainer" class="space-y-3">
-        <!-- VENDOR CARD 1 -->
-        <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm relative overflow-hidden">
-          <div class="flex items-start justify-between">
-            <div>
-              <div class="flex items-center space-x-2">
-                <h2 id="txt-v1-name" class="font-bold text-base text-[#1C1917]">Raju Prasad • Fresh Vegetables</h2>
-                <span class="text-[10px] font-semibold bg-stone-100 text-[#57534E] px-1.5 py-0.5 rounded border border-stone-200">#104</span>
-              </div>
-              <p id="txt-v1-sub" class="text-xs text-[#78716C] mt-0.5">e-Shram Verified • Pushcart</p>
-            </div>
-            <div class="text-right">
-              <span id="txt-v1-eta" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                8 mins away
-              </span>
-            </div>
-          </div>
-
-          <div class="mt-3 pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-xs">
-            <div class="text-[#44403C]">
-              <span id="txt-v1-bundle-lbl" class="font-medium">Today's Bundle:</span>
-              <span id="txt-v1-bundle-val" class="text-[#78716C] ml-1">Potatoes, Onions, Tomatoes, Coriander</span>
-            </div>
-          </div>
-
-          <div class="mt-3 grid grid-cols-2 gap-2">
-            <button onclick="playChime(523.25, 'triangle')" id="btn-v1-ring" class="text-xs font-semibold py-2 px-3 border border-stone-300 rounded bg-[#FAFAF9] text-[#44403C] hover:bg-[#F5F5F4] active:scale-95 transition-all text-center">
-              Ring Chime 🔔
-            </button>
-            <button onclick="reserveOrder(document.getElementById('txt-v1-name').innerText, document.getElementById('txt-v1-bundle-val').innerText)" id="btn-v1-reserve" class="text-xs font-semibold py-2 px-3 bg-[#1C1917] text-white rounded hover:bg-[#292524] active:scale-95 transition-all text-center">
-              1-Tap Reserve
-            </button>
-          </div>
-        </div>
-
-        <!-- VENDOR CARD 2 -->
-        <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm opacity-90">
-          <div class="flex items-start justify-between">
-            <div>
-              <div class="flex items-center space-x-2">
-                <h2 id="txt-v2-name" class="font-bold text-base text-[#1C1917]">Mahesh Maurya • Seasonal Fruits</h2>
-                <span class="text-[10px] font-semibold bg-stone-100 text-[#57534E] px-1.5 py-0.5 rounded border border-stone-200">#108</span>
-              </div>
-              <p id="txt-v2-sub" class="text-xs text-[#78716C] mt-0.5">PM-SVANidhi Cleared • Pushcart</p>
-            </div>
-            <div class="text-right">
-              <span id="txt-v2-slot" class="text-xs font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
-                10:00 AM Slot
-              </span>
-            </div>
-          </div>
-          <div id="txt-v2-items" class="mt-3 pt-3 border-t border-[#F5F5F4] text-xs text-[#78716C]">
-            Bananas, Kinnow, Kashmiri Apples • Fresh Batch
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 2: WALK-IN STALLS & CAMPUS TECHNICIANS -->
-    <div id="staticSection" class="space-y-3 hidden">
-      <!-- GIG WORKER DYNAMIC CARD -->
-      <div class="border border-blue-200 rounded-lg bg-blue-50/30 p-4 shadow-sm">
-        <div class="flex items-start justify-between">
-          <div>
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
+            
             <div class="flex items-center space-x-2">
-              <h2 id="txt-g1-name" class="font-bold text-base text-stone-900">Satish Kumar • Electrician</h2>
-              <span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded border border-blue-200">On-Campus</span>
+                <svg class="w-7 h-7" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 22 32 A 28 28 0 0 0 22 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 78 32 A 28 28 0 0 1 78 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 50 15 C 34 15 22 27 22 43 C 22 63 50 85 50 85 C 50 85 78 63 78 43 C 78 27 66 15 50 15 Z" fill="#064E3B"/>
+                    <circle cx="50" cy="43" r="14" fill="white"/>
+                    <circle cx="50" cy="43" r="13" stroke="#064E3B" stroke-width="2" fill="none"/>
+                    <line x1="50" y1="30" x2="50" y2="56" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="37" y1="43" x2="63" y2="43" stroke="#064E3B" stroke-width="2"/>
+                </svg>
+
+                <div class="flex flex-col">
+                    <div class="flex items-baseline space-x-1">
+                        <span class="font-extrabold text-base tracking-tight text-[#064E3B]">DASTAK</span>
+                        <span class="text-[10px] font-semibold text-amber-700">दस्तक</span>
+                    </div>
+                </div>
             </div>
-            <p id="txt-g1-sub" class="text-xs text-stone-600 mt-0.5">Skill India Certified • Inside Tower B</p>
-          </div>
-          <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-            Available
-          </span>
-        </div>
-        <div class="mt-3 pt-3 border-t border-blue-100 flex items-center justify-between text-xs text-stone-600">
-          <span>Standard Labor: Flat ₹79–₹149</span>
-          <button onclick="alert('⚡ Contacted Satish Kumar via campus intercom / guard clearance. Zero platform commission.')" class="font-semibold text-blue-800 hover:underline">
-            Request Micro-Repair
-          </button>
-        </div>
-      </div>
 
-      <!-- STATIC SPOT 1 -->
-      <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
-        <div class="flex items-start justify-between">
-          <div>
-            <h2 id="txt-s1-name" class="font-bold text-base text-[#1C1917]">Mishra Tea Stall & Nukkad</h2>
-            <p id="txt-s1-sub" class="text-xs text-[#78716C] mt-0.5">Peepal Chowk • Opposite Gate 1</p>
-          </div>
-          <span id="txt-s1-status" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-            Open
-          </span>
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleLanguage()" id="langBtn" class="text-xs font-semibold px-3 py-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-full text-stone-700 transition">
+                    हिन्दी
+                </button>
+            </div>
         </div>
-        <div class="mt-3 pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-xs text-[#57534E]">
-          <span id="txt-s1-dist">Distance: 120m (2 min walk)</span>
-          <span class="font-semibold text-[#1C1917]">Anchor #M-01</span>
-        </div>
-      </div>
 
-      <!-- STATIC SPOT 2 -->
-      <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
-        <div class="flex items-start justify-between">
-          <div>
-            <h2 id="txt-s2-name" class="font-bold text-base text-[#1C1917]">Radhey Shyam • Clothes Ironing</h2>
-            <p id="txt-s2-sub" class="text-xs text-[#78716C] mt-0.5">Gali 3 Turn • Fixed Stall</p>
-          </div>
-          <span id="txt-s2-status" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-            Available
-          </span>
+        <nav class="bg-[#064E3B] text-stone-200 text-[11px] py-1.5 px-4 flex justify-around font-medium border-t border-emerald-900">
+            <a href="/" class="text-amber-400 font-bold">Resident</a>
+            <span>•</span>
+            <a href="/partner" class="hover:text-amber-400">Vendor</a>
+            <span>•</span>
+            <a href="/technician" class="hover:text-amber-400">Technician</a>
+            <span>•</span>
+            <a href="/guard" class="hover:text-amber-400">Security Guard</a>
+        </nav>
+    </header>
+
+    <div class="bg-stone-100 border-b border-stone-200 py-1.5 px-4">
+        <div class="max-w-md mx-auto flex justify-between items-center text-xs">
+            <span class="text-stone-600 flex items-center gap-1">
+                📍 <span class="font-medium text-stone-800">Zone: ROHINI SEC9</span>
+            </span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold px-2 py-0.5 rounded-full">
+                0 dB Silent Zone
+            </span>
         </div>
-        <div class="mt-3 pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-xs text-[#57534E]">
-          <span id="txt-s2-dist">Distance: 180m (3 min walk)</span>
-          <span class="font-semibold text-[#1C1917]">Anchor #M-04</span>
-        </div>
-      </div>
     </div>
-  </main>
 
-  <!-- BOTTOM COMPLIANCE FOOTER -->
-  <footer class="border-t border-[#E7E5E4] bg-white py-3 text-center text-[11px] text-[#78716C]">
-    <div class="max-w-md mx-auto px-4 flex justify-between items-center">
-      <span id="txt-footer-cpcb">CPCB 55 dB compliant • 0% take-rate</span>
-      <span id="txt-footer-pay" class="font-medium text-[#1C1917]">Direct UPI / Cash</span>
-    </div>
-  </footer>
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto px-4 pt-3 space-y-3">
 
-  <!-- NATIVE WEB AUDIO SYNTHESIZER & COMPLETE BILINGUAL LOGIC -->
-  <script>
-    let audioCtx = null;
-    let currentLang = 'en';
+        <!-- SEARCH BAR -->
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-stone-400 text-sm">
+                🔍
+            </div>
+            <input type="text" id="searchInput" onkeyup="filterVendors()" placeholder="Search potatoes, samosa, clothes, keys, electrician, xerox..." class="w-full bg-white border border-stone-300 rounded-2xl pl-9 pr-8 py-2.5 text-xs text-stone-800 shadow-sm focus:outline-none focus:border-[#064E3B] focus:ring-1 focus:ring-[#064E3B]">
+            <button onclick="clearSearch()" id="clearBtn" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-stone-400 hover:text-stone-600 text-xs">
+                ✕
+            </button>
+        </div>
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const zone = urlParams.get('zone') || 'ROHINI_SEC9';
+        <!-- Section Switcher Tabs -->
+        <div class="grid grid-cols-2 gap-1 bg-stone-200/70 p-1 rounded-2xl text-xs font-medium">
+            <button onclick="switchTab('DOORSTEP')" id="tab-doorstep" class="py-2 px-3 rounded-xl bg-white shadow-sm font-bold text-stone-900 transition">
+                <div>Doorstep Arrivals</div>
+                <div class="text-[9px] text-emerald-700 font-normal">Live Carts</div>
+            </button>
+            <button onclick="switchTab('WALKIN')" id="tab-walkin" class="py-2 px-3 rounded-xl text-stone-600 hover:text-stone-900 transition">
+                <div>Walk-In Stalls & Techs</div>
+                <div class="text-[9px] font-normal">Fixed & On-Campus</div>
+            </button>
+        </div>
 
-    const I18N = {
-      en: {
-        langBtn: "हिन्दी",
-        zonePrefix: "Zone: ",
-        silentBadge: "0 dB Silent",
-        audioHeader: "Enable Arrival Chimes",
-        audioSub: "Tap to hear soft bell chimes when carts enter",
-        audioListenBtn: "Listen 🔔",
-        tabDoorstepTitle: "Doorstep Arrivals",
-        tabDoorstepSub: "Live Carts",
-        tabStaticTitle: "Walk-In Stalls & Techs",
-        tabStaticSub: "Fixed & On-Campus",
-        v1Name: "Raju Prasad • Fresh Vegetables",
-        v1Sub: "e-Shram Verified • Pushcart",
-        v1Eta: "8 mins away",
-        v1BundleLbl: "Today's Bundle:",
-        v1BundleVal: "Potatoes, Onions, Tomatoes, Coriander",
-        v1RingBtn: "Ring Chime 🔔",
-        v1ReserveBtn: "1-Tap Reserve",
-        v2Name: "Mahesh Maurya • Seasonal Fruits",
-        v2Sub: "PM-SVANidhi Cleared • Pushcart",
-        v2Slot: "10:00 AM Slot",
-        v2Items: "Bananas, Kinnow, Kashmiri Apples • Fresh Batch",
-        g1Name: "Satish Kumar • Electrician",
-        g1Sub: "Skill India Certified • Inside Tower B",
-        s1Name: "Mishra Tea Stall & Nukkad",
-        s1Sub: "Peepal Chowk • Opposite Gate 1",
-        s1Status: "Open",
-        s1Dist: "Distance: 120m (2 min walk)",
-        s2Name: "Radhey Shyam • Clothes Ironing",
-        s2Sub: "Gali 3 Turn • Fixed Stall",
-        s2Status: "Available",
-        s2Dist: "Distance: 180m (3 min walk)",
-        footerCpcb: "CPCB 55 dB compliant • 0% take-rate",
-        footerPay: "Direct UPI / Cash",
-        reserveAlert: "✅ RESERVED WITH "
-      },
-      hi: {
-        langBtn: "English",
-        zonePrefix: "इलाका: ",
-        silentBadge: "0 dB शांत",
-        audioHeader: "आगमन घंटी चालू करें",
-        audioSub: "ठेले आने पर मधुर घंटी सुनने के लिए टैप करें",
-        audioListenBtn: "सुनिए 🔔",
-        tabDoorstepTitle: "घर पर आएंगे",
-        tabDoorstepSub: "चलते ठेले",
-        tabStaticTitle: "अभी मिलेंगे व कारीगर",
-        tabStaticSub: "स्थायी व परिसर में",
-        v1Name: "राजू प्रसाद • ताज़ा सब्ज़ी",
-        v1Sub: "ई-श्रम सत्यापित • ठेला",
-        v1Eta: "8 मिनट दूर",
-        v1BundleLbl: "आज का बंडल:",
-        v1BundleVal: "आलू, प्याज़, टमाटर, धनिया",
-        v1RingBtn: "घंटी बजाएं 🔔",
-        v1ReserveBtn: "रोकें (1-Tap Reserve)",
-        v2Name: "महेश मौर्या • मौसमी फल",
-        v2Sub: "PM-स्वनिधि स्वीकृत • ठेला",
-        v2Slot: "10:00 AM स्लॉट",
-        v2Items: "केले, किन्नू, कश्मीरी सेब • ताज़ा लॉट",
-        g1Name: "सतीश कुमार • इलेक्ट्रीशियन",
-        g1Sub: "स्किल इंडिया प्रमाणित • टावर बी में उपलब्ध",
-        s1Name: "मishra Tea Stall एवं नुक्कड़",
-        s1Sub: "पीपल चौक • गेट 1 के सामने",
-        s1Status: "खुला है",
-        s1Dist: "दूरी: 120 मीटर (2 मिनट पैदल)",
-        s2Name: "राधे श्याम • कपड़े प्रेस / इस्त्री",
-        s2Sub: "गली 3 मोड़ • स्थायी दुकान",
-        s2Status: "उपलब्ध",
-        s2Dist: "दूरी: 180 मीटर (3 मिनट पैदल)",
-        footerCpcb: "CPCB 55 dB प्रमाणित • 0% कमीशन",
-        footerPay: "सीधा भुगतान (UPI / नकद)",
-        reserveAlert: "✅ आपका ऑर्डर सुरक्षित किया गया: "
-      }
-    };
+        <!-- VENDOR LIST CONTAINER -->
+        <div id="vendorList" class="space-y-3">
 
-    function renderLanguage() {
-      const d = I18N[currentLang];
-      document.getElementById('langToggle').textContent = d.langBtn;
-      document.getElementById('zoneIndicator').textContent = d.zonePrefix + zone.replace('_', ' ');
-      document.getElementById('txt-silent-badge').textContent = d.silentBadge;
-      document.getElementById('audioTextHeader').textContent = d.audioHeader;
-      document.getElementById('audioTextSub').textContent = d.audioSub;
-      document.getElementById('btn-audio-listen').textContent = d.audioListenBtn;
-      document.getElementById('txt-tab-doorstep-title').textContent = d.tabDoorstepTitle;
-      document.getElementById('txt-tab-doorstep-sub').textContent = d.tabDoorstepSub;
-      document.getElementById('txt-tab-static-title').textContent = d.tabStaticTitle;
-      document.getElementById('txt-tab-static-sub').textContent = d.tabStaticSub;
-      document.getElementById('txt-v1-name').textContent = d.v1Name;
-      document.getElementById('txt-v1-sub').textContent = d.v1Sub;
-      document.getElementById('txt-v1-eta').textContent = d.v1Eta;
-      document.getElementById('txt-v1-bundle-lbl').textContent = d.v1BundleLbl;
-      document.getElementById('txt-v1-bundle-val').textContent = d.v1BundleVal;
-      document.getElementById('btn-v1-ring').textContent = d.v1RingBtn;
-      document.getElementById('btn-v1-reserve').textContent = d.v1ReserveBtn;
-      document.getElementById('txt-v2-name').textContent = d.v2Name;
-      document.getElementById('txt-v2-sub').textContent = d.v2Sub;
-      document.getElementById('txt-v2-slot').textContent = d.v2Slot;
-      document.getElementById('txt-v2-items').textContent = d.v2Items;
-      document.getElementById('txt-g1-name').textContent = d.g1Name;
-      document.getElementById('txt-g1-sub').textContent = d.g1Sub;
-      document.getElementById('txt-s1-name').textContent = d.s1Name;
-      document.getElementById('txt-s1-sub').textContent = d.s1Sub;
-      document.getElementById('txt-s1-status').textContent = d.s1Status;
-      document.getElementById('txt-s1-dist').textContent = d.s1Dist;
-      document.getElementById('txt-s2-name').textContent = d.s2Name;
-      document.getElementById('txt-s2-sub').textContent = d.s2Sub;
-      document.getElementById('txt-s2-status').textContent = d.s2Status;
-      document.getElementById('txt-s2-dist').textContent = d.s2Dist;
-      document.getElementById('txt-footer-cpcb').textContent = d.footerCpcb;
-      document.getElementById('txt-footer-pay').textContent = d.footerPay;
-    }
+            <!-- Card 1: Fresh Vegetables Pushcart -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="raju prasad fresh vegetables potatoes onions tomatoes coriander produce hawker 104">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Raju Prasad • Fresh Vegetables 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#104</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">e-Shram Verified • Pushcart</div>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+                        8 mins away
+                    </span>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Today's Bundle:</span> Potatoes, Onions, Tomatoes, Coriander
+                </div>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    <button onclick="playChime()" class="py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 font-bold text-xs rounded-xl border border-stone-300 transition flex items-center justify-center gap-1">
+                        Ring Chime 🔔
+                    </button>
+                    <button onclick="alert('Slot Reserved! Raju Prasad notified.')" class="py-2 bg-stone-900 hover:bg-black text-white font-bold text-xs rounded-xl shadow-sm transition">
+                        1-Tap Reserve
+                    </button>
+                </div>
+            </div>
 
-    function toggleLanguage() {
-      currentLang = (currentLang === 'en') ? 'hi' : 'en';
-      renderLanguage();
-    }
+            <!-- Card 2: Seasonal Fruits Pushcart -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="mahesh maurya seasonal fruits bananas kinnow kashmiri apples citrus produce hawker 108">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Mahesh Maurya • Seasonal Fruits 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#108</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">PM-SVANidhi Cleared • Pushcart</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs font-bold text-stone-800">10:00 AM</div>
+                        <div class="text-[9px] text-stone-400">Scheduled Slot</div>
+                    </div>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Today's Bundle:</span> Bananas, Kinnow, Kashmiri Apples • Fresh Batch
+                </div>
+            </div>
 
-    function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
+            <!-- Card 3: Hot Chaat & Snacks Cart -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="sharma ji chaat hot snacks samosa golgappa tikki kachori food cart hawker 115">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Sharma Ji • Chaat & Hot Snacks 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#115</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">e-Shram Verified • Food Cart</div>
+                    </div>
+                    <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">
+                        Arriving 5 PM
+                    </span>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Today's Items:</span> Fresh Samosa, Pani Puri / Golgappa, Aloo Tikki
+                </div>
+            </div>
 
-    function playChime(freq = 523.25, type = 'sine') {
-      initAudio();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+            <!-- Card 4: Knife Sharpening & Keymaker -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="sunil kumar knife sharpening scissors grinding duplicate keys keymaker bicycle hawker 112">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Sunil Kumar • Sharpening & Keys 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#112</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">e-Shram Verified • Mobile Bicycle Unit</div>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+                        15 mins away
+                    </span>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Services:</span> Kitchen Knife Grinding, Scissors Sharpening, Duplicate Keys
+                </div>
+            </div>
 
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            <!-- Card 5: Clothes & Hosiery Pushcart -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="vikram singh clothes hosiery cotton kurtis socks tshirts apparel hawker 118">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Vikram Singh • Apparel & Hosiery 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#118</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">e-Shram Verified • Pushcart</div>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+                        20 mins away
+                    </span>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Today's Stock:</span> Cotton T-Shirts, Kids Dailywear, Socks & Towels
+                </div>
+            </div>
 
-      gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.4, audioCtx.currentTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+            <!-- Card 6: Kabadi & Scrap Pickup Tricycle -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="radhey shyam kabadi scrap paper cardboard ewaste metals plastic pickup hawker 120">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Radhey Shyam • Kabadi & Scrap Pickup 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#120</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">PM-SVANidhi Cleared • Heavy Tricycle</div>
+                    </div>
+                    <span class="bg-stone-100 text-stone-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-stone-300">
+                        On-Call Pickup
+                    </span>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Accepts:</span> Old Newspapers, Cardboard Boxes, Metal Scrap, E-Waste
+                </div>
+            </div>
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+            <!-- Card 7: Stationery & Xerox Stall -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-amber-200 shadow-sm space-y-2.5" data-keywords="verma stationery xerox photocopy printouts school notebooks pens fixed stall 201">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            📚 Verma Stationery & Xerox 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#201</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">Fixed Canopy • Gate 2 Stall</div>
+                    </div>
+                    <span class="bg-amber-100 text-amber-900 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">
+                        Fixed Stall
+                    </span>
+                </div>
+                <div class="bg-stone-50 p-3 rounded-xl border border-stone-200 text-xs space-y-2">
+                    <button onclick="toggleStallMap()" class="w-full py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-lg text-[11px] transition">
+                        Find Route on Map 🧭
+                    </button>
+                    <div id="mapContainer" class="hidden pt-1">
+                        <div id="map" class="w-full h-48 rounded-xl border border-stone-300 z-10"></div>
+                    </div>
+                </div>
+            </div>
 
-      osc.start();
-      osc.stop(audioCtx.currentTime + 1.25);
-    }
+            <!-- Card 8: Electrician Technician -->
+            <div class="vendor-card bg-white p-4 rounded-2xl border border-stone-200 shadow-sm space-y-2" data-keywords="ramesh electrician wiring switchboard fan mcb microwave repair artisan 304">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-sm text-stone-900">
+                            Ramesh Kumar • Electrician & Appliance 
+                            <span class="text-[10px] bg-stone-100 border border-stone-200 px-1.5 py-0.5 rounded text-stone-600 font-mono font-normal">#304</span>
+                        </div>
+                        <div class="text-[10px] text-stone-500 mt-0.5">Skill India Verified • Rate Card: ₹99 Visit</div>
+                    </div>
+                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-300">
+                        Available On-Campus
+                    </span>
+                </div>
+                <div class="text-xs text-stone-700 bg-stone-50 p-2 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-500 text-[10px]">Services:</span> Switchboard Fix, Fan Wiring, MCB Trips, Inverter Setup
+                </div>
+            </div>
 
-    function unlockAndPlayEarcon() {
-      playChime(523.25, 'triangle');
-      document.getElementById('audioBanner').classList.add('hidden');
-    }
+            <div id="noResults" class="hidden text-center py-8 bg-white rounded-2xl border border-stone-200 text-stone-500 text-xs">
+                <p class="font-bold text-stone-700 text-sm mb-1">No Vendors Found</p>
+                <p>Try searching for "vegetables", "fruits", "samosa", "clothes", "kabadi", or "electrician".</p>
+            </div>
 
-    function switchTab(tab) {
-      const doorstepSec = document.getElementById('doorstepSection');
-      const staticSec = document.getElementById('staticSection');
-      const tabDoorstep = document.getElementById('tabDoorstep');
-      const tabStatic = document.getElementById('tabStatic');
+        </div>
 
-      if (tab === 'doorstep') {
-        doorstepSec.classList.remove('hidden');
-        staticSec.classList.add('hidden');
-        tabDoorstep.classList.add('bg-white', 'shadow-sm', 'text-[#1C1917]');
-        tabDoorstep.classList.remove('text-[#78716C]');
-        tabStatic.classList.remove('bg-white', 'shadow-sm', 'text-[#1C1917]');
-        tabStatic.classList.add('text-[#78716C]');
-      } else {
-        doorstepSec.classList.add('hidden');
-        staticSec.classList.remove('hidden');
-        tabStatic.classList.add('bg-white', 'shadow-sm', 'text-[#1C1917]');
-        tabStatic.classList.remove('text-[#78716C]');
-        tabDoorstep.classList.remove('bg-white', 'shadow-sm', 'text-[#1C1917]');
-        tabDoorstep.classList.add('text-[#78716C]');
-      }
-    }
+        <footer class="text-center text-[11px] text-stone-400 pt-3">
+            CPCB 55 dB compliant • 0% take-rate • Direct UPI / Cash
+        </footer>
+    </main>
 
-    function reserveOrder(vendor, item) {
-      playChime(659.25, 'sine');
-      const d = I18N[currentLang];
-      alert(d.reserveAlert + vendor + '\n\n' + item + '\n\n' + (currentLang === 'en' ? 'Pay directly in-person via UPI or cash.' : 'सामान देखकर ठेले पर सीधे UPI या नकद भुगतान करें।'));
-    }
+    <script>
+        let mapInstance = null;
 
-    renderLanguage();
-  </script>
+        function filterVendors() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const clearBtn = document.getElementById('clearBtn');
+            const cards = document.querySelectorAll('.vendor-card');
+            let visibleCount = 0;
+
+            clearBtn.classList.toggle('hidden', query === '');
+
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords').toLowerCase();
+                if (keywords.includes(query)) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('noResults').classList.toggle('hidden', visibleCount > 0);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filterVendors();
+        }
+
+        function switchTab(tabName) {
+            const tabDoorstep = document.getElementById('tab-doorstep');
+            const tabWalkin = document.getElementById('tab-walkin');
+            const cards = document.querySelectorAll('.vendor-card');
+
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearBtn').classList.add('hidden');
+            document.getElementById('noResults').classList.add('hidden');
+
+            if (tabName === 'DOORSTEP') {
+                tabDoorstep.className = "py-2 px-3 rounded-xl bg-white shadow-sm font-bold text-stone-900 transition";
+                tabWalkin.className = "py-2 px-3 rounded-xl text-stone-600 hover:text-stone-900 transition font-medium";
+                
+                cards.forEach(card => {
+                    const kw = card.getAttribute('data-keywords');
+                    if (kw.includes('hawker') || kw.includes('food cart') || kw.includes('bicycle')) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            } else {
+                tabWalkin.className = "py-2 px-3 rounded-xl bg-white shadow-sm font-bold text-stone-900 transition";
+                tabDoorstep.className = "py-2 px-3 rounded-xl text-stone-600 hover:text-stone-900 transition font-medium";
+                
+                cards.forEach(card => {
+                    const kw = card.getAttribute('data-keywords');
+                    if (kw.includes('artisan') || kw.includes('fixed stall') || kw.includes('electrician')) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function playChime() {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, ctx.currentTime);
+            gain.gain.setValueAtTime(0.1, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.2);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 1.2);
+        }
+
+        function toggleStallMap() {
+            const mapContainer = document.getElementById('mapContainer');
+            if (mapContainer.classList.contains('hidden')) {
+                mapContainer.classList.remove('hidden');
+                if (!mapInstance) {
+                    mapInstance = L.map('map').setView([28.7112, 77.1215], 16);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' }).addTo(mapInstance);
+                    L.marker([28.7112, 77.1215]).addTo(mapInstance).bindPopup("Verma Stationery Stall #201").openPopup();
+                }
+                setTimeout(() => mapInstance.invalidateSize(), 200);
+            } else {
+                mapContainer.classList.add('hidden');
+            }
+        }
+
+        switchTab('DOORSTEP');
+    </script>
 </body>
 </html>

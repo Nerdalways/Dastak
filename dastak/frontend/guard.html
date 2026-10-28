@@ -1,269 +1,261 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-[#FAFAF9]">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dastak • RWA Gate Security Console | गेट सुरक्षा</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- In-Browser HTML5 Camera QR Scanner -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .serif-title { font-family: 'Rozha One', serif; }
-    .cinzel { font-family: 'Cinzel', serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dastak • RWA Gate Security Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTML5 QR Code Camera Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
-<body class="min-h-full flex flex-col justify-between text-[#1C1917] antialiased">
+<body class="bg-[#F5F4F0] min-h-screen text-stone-900 font-sans pb-12 antialiased">
 
-  <!-- TOP HEADER -->
-  <header class="border-b border-[#E7E5E4] bg-white sticky top-0 z-50">
-    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
-        <h1 id="top-title" class="serif-title text-2xl tracking-wide text-[#1C1917]">गेट सुरक्षा</h1>
-        <span class="cinzel text-[11px] font-bold tracking-widest text-[#78716C] ml-1 pt-1">GUARD CONSOLE</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button id="langToggleBtn" onclick="toggleLanguage()" class="text-xs font-semibold px-2.5 py-1 border border-[#D6D3D1] rounded bg-[#FAFAF9] text-[#44403C] hover:bg-[#F5F5F4] transition-all">
-          हिन्दी
-        </button>
-        <span class="text-xs font-semibold px-2 py-1 border border-stone-200 rounded bg-[#FAFAF9] text-[#57534E]">
-          Gate 1
-        </span>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN CONSOLE -->
-  <main class="max-w-md mx-auto w-full px-4 pt-4 pb-20 flex-1 space-y-4">
-
-    <!-- CAMERA SCANNER & PASS VERIFICATION -->
-    <section class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
-      <h2 id="txt-scan-header" class="font-bold text-sm text-[#1C1917] mb-1">Verify Digital Gate Pass</h2>
-      <p id="txt-scan-sub" class="text-xs text-stone-500 mb-3">Scan vendor QR code using device camera:</p>
-
-      <!-- LIVE CAMERA VIEWPORT -->
-      <div id="cameraViewport" class="hidden mb-3 rounded-lg overflow-hidden border border-stone-300 bg-black">
-        <div id="qrReader" class="w-full"></div>
-      </div>
-
-      <!-- SCANNER CONTROL BUTTONS -->
-      <div class="grid grid-cols-2 gap-2 mb-2">
-        <button onclick="startCameraScanner()" id="btn-camera" class="py-2.5 px-3 rounded-lg bg-emerald-700 text-white font-bold text-xs shadow hover:bg-emerald-800 active:scale-98 transition-all flex items-center justify-center space-x-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
-          <span id="btn-camera-text">Scan Camera QR</span>
-        </button>
-        <button onclick="stopCameraScanner()" id="btn-stop-cam" class="hidden py-2.5 px-3 rounded-lg bg-stone-700 text-white font-bold text-xs shadow hover:bg-stone-800 active:scale-98 transition-all">
-          Stop Camera
-        </button>
-        <button onclick="toggleManualInput()" id="btn-toggle-manual" class="py-2.5 px-3 rounded-lg border border-stone-300 bg-stone-50 text-stone-700 font-bold text-xs shadow hover:bg-stone-100 active:scale-98 transition-all">
-          Manual Token
-        </button>
-      </div>
-
-      <!-- MANUAL TOKEN INPUT (FALLBACK) -->
-      <div id="manualInputContainer" class="hidden space-y-2 mt-2">
-        <textarea id="passTokenInput" rows="2" placeholder="Paste cryptographic token here..." class="w-full border border-stone-300 rounded p-2 text-xs font-mono text-stone-900 bg-stone-50 focus:outline-none focus:ring-1 focus:ring-stone-400"></textarea>
-        <button onclick="verifyPassToken(document.getElementById('passTokenInput').value)" id="btn-verify" class="w-full py-2 px-4 rounded-lg bg-[#1C1917] text-white font-bold text-xs shadow hover:bg-stone-800 active:scale-98 transition-all">
-          Verify Pasted Token
-        </button>
-      </div>
-
-      <!-- VERIFICATION RESULT CONTAINER -->
-      <div id="resultBox" class="hidden mt-3 p-3 rounded-lg border text-xs space-y-1.5 transition-all"></div>
-    </section>
-
-    <!-- SCHEDULED VENDORS ROSTER -->
-    <section class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
-      <div class="flex items-center justify-between mb-3 border-b border-stone-100 pb-2">
-        <h2 id="txt-roster-header" class="font-bold text-sm text-[#1C1917]">Scheduled Morning Vendors</h2>
-        <span class="text-[10px] font-semibold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded border border-emerald-200">
-          Rohini Sec 9
-        </span>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <div class="p-3 rounded border border-stone-200 bg-stone-50/50 flex items-center justify-between">
-          <div>
+    <!-- Unified Header Navigation -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
+            
+            <!-- OFFICIAL DASTAK BRAND LOGO -->
             <div class="flex items-center space-x-2">
-              <span class="font-bold text-stone-900">Raju Prasad</span>
-              <span class="text-[10px] bg-stone-200 text-stone-700 px-1.5 py-0.2 rounded font-semibold">CANOPY #104</span>
+                <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 22 32 A 28 28 0 0 0 22 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 78 32 A 28 28 0 0 1 78 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 50 15 C 34 15 22 27 22 43 C 22 63 50 85 50 85 C 50 85 78 63 78 43 C 78 27 66 15 50 15 Z" fill="#064E3B"/>
+                    <circle cx="50" cy="43" r="14" fill="white"/>
+                    <circle cx="50" cy="43" r="13" stroke="#064E3B" stroke-width="2" fill="none"/>
+                    <line x1="50" y1="30" x2="50" y2="56" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="37" y1="43" x2="63" y2="43" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="40.8" y1="33.8" x2="59.2" y2="52.2" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="40.8" y1="52.2" x2="59.2" y2="33.8" stroke="#064E3B" stroke-width="2"/>
+                </svg>
+
+                <div class="flex flex-col">
+                    <div class="flex items-baseline space-x-1">
+                        <span class="font-extrabold text-lg tracking-tight text-[#064E3B]">DASTAK</span>
+                        <span class="text-[10px] font-semibold text-amber-700 tracking-wider">दस्तक</span>
+                    </div>
+                    <span class="text-[9px] font-semibold text-stone-500 uppercase tracking-widest">GUARD TERMINAL</span>
+                </div>
             </div>
-            <p class="text-[11px] text-stone-500 mt-0.5">Fresh Vegetables • e-Shram Verified</p>
-            <p class="text-[10px] text-stone-400">Slot: 09:30 AM – 10:15 AM</p>
-          </div>
-          <button onclick="quickApprove('Raju Prasad', 104, 'Fresh Vegetables')" class="text-xs font-semibold px-3 py-1.5 bg-emerald-600 text-white rounded hover:bg-emerald-700 active:scale-95 transition-all">
-            Allow Entry
-          </button>
+
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-100 text-amber-900 border border-amber-300 rounded-full font-mono">
+                Gate 1 Active
+            </span>
         </div>
 
-        <div class="p-3 rounded border border-stone-200 bg-stone-50/50 flex items-center justify-between">
-          <div>
-            <div class="flex items-center space-x-2">
-              <span class="font-bold text-stone-900">Mahesh Maurya</span>
-              <span class="text-[10px] bg-stone-200 text-stone-700 px-1.5 py-0.2 rounded font-semibold">CANOPY #108</span>
+        <!-- Portal Router Bar -->
+        <nav class="bg-[#064E3B] text-stone-200 text-[11px] py-1.5 px-4 flex justify-around font-medium border-t border-emerald-900">
+            <a href="/" class="hover:text-amber-400">Resident</a>
+            <span>•</span>
+            <a href="/partner" class="hover:text-amber-400">Vendor</a>
+            <span>•</span>
+            <a href="/technician" class="hover:text-amber-400">Technician</a>
+            <span>•</span>
+            <a href="/guard" class="text-amber-400 font-bold">Security Guard</a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
+
+        <!-- 1. Live Camera QR Code Scanner & Pass Verification -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h2 class="font-bold text-sm text-stone-800">1. Verify Digital Gate Pass</h2>
+                <span class="text-[10px] bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold px-2 py-0.5 rounded">HMAC-SHA256 Protocol</span>
             </div>
-            <p class="text-[11px] text-stone-500 mt-0.5">Seasonal Fruits • PM-SVANidhi Cleared</p>
-            <p class="text-[10px] text-stone-400">Slot: 10:00 AM – 10:45 AM</p>
-          </div>
-          <button onclick="quickApprove('Mahesh Maurya', 108, 'Seasonal Fruits')" class="text-xs font-semibold px-3 py-1.5 bg-emerald-600 text-white rounded hover:bg-emerald-700 active:scale-95 transition-all">
-            Allow Entry
-          </button>
-        </div>
-      </div>
-    </section>
 
-  </main>
-
-  <!-- BOTTOM FOOTER -->
-  <footer class="border-t border-[#E7E5E4] bg-white py-3 text-center text-[11px] text-[#78716C]">
-    <div class="max-w-md mx-auto px-4 flex justify-between items-center">
-      <span>RWA Society Clearance Protocol</span>
-      <span class="font-medium text-[#1C1917]">No Paper Registers Required</span>
-    </div>
-  </footer>
-
-  <script>
-    let currentLang = 'en';
-    let html5QrScanner = null;
-
-    const I18N = {
-      en: {
-        langBtn: "हिन्दी",
-        scanHeader: "Verify Digital Gate Pass",
-        scanSub: "Scan vendor QR code using device camera:",
-        btnCameraText: "Scan Camera QR",
-        btnStopCam: "Stop Camera",
-        btnToggleManual: "Manual Token",
-        btnVerify: "Verify Pasted Token",
-        rosterHeader: "Scheduled Morning Vendors"
-      },
-      hi: {
-        langBtn: "English",
-        scanHeader: "डिजिटल गेट पास सत्यापित करें",
-        scanSub: "डिवाइस कैमरे से वेंडर QR कोड स्कैन करें:",
-        btnCameraText: "कैमरा QR स्कैन करें",
-        btnStopCam: "कैमरा बंद करें",
-        btnToggleManual: "मैनुअल टोकन",
-        btnVerify: "टोकन जांचें",
-        rosterHeader: "आज सुबह के अधिकृत विक्रेता"
-      }
-    };
-
-    function renderLanguage() {
-      const d = I18N[currentLang];
-      document.getElementById('langToggleBtn').textContent = d.langBtn;
-      document.getElementById('txt-scan-header').textContent = d.scanHeader;
-      document.getElementById('txt-scan-sub').textContent = d.scanSub;
-      document.getElementById('btn-camera-text').textContent = d.btnCameraText;
-      document.getElementById('btn-stop-cam').textContent = d.btnStopCam;
-      document.getElementById('btn-toggle-manual').textContent = d.btnToggleManual;
-      document.getElementById('btn-verify').textContent = d.btnVerify;
-      document.getElementById('txt-roster-header').textContent = d.rosterHeader;
-    }
-
-    function toggleLanguage() {
-      currentLang = (currentLang === 'en') ? 'hi' : 'en';
-      renderLanguage();
-    }
-
-    function toggleManualInput() {
-      const container = document.getElementById('manualInputContainer');
-      container.classList.toggle('hidden');
-    }
-
-    function startCameraScanner() {
-      const viewport = document.getElementById('cameraViewport');
-      const stopBtn = document.getElementById('btn-stop-cam');
-      const camBtn = document.getElementById('btn-camera');
-
-      viewport.classList.remove('hidden');
-      stopBtn.classList.remove('hidden');
-      camBtn.classList.add('hidden');
-
-      html5QrScanner = new Html5Qrcode("qrReader");
-      html5QrScanner.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
-        (decodedText) => {
-          stopCameraScanner();
-          verifyPassToken(decodedText);
-        },
-        (error) => {}
-      ).catch(err => {
-        alert("Camera permission denied or camera unavailable. Please use manual token entry.");
-        stopCameraScanner();
-      });
-    }
-
-    function stopCameraScanner() {
-      if (html5QrScanner) {
-        html5QrScanner.stop().then(() => {
-          html5QrScanner.clear();
-          document.getElementById('cameraViewport').classList.add('hidden');
-          document.getElementById('btn-stop-cam').classList.add('hidden');
-          document.getElementById('btn-camera').classList.remove('hidden');
-        }).catch(() => {
-          document.getElementById('cameraViewport').classList.add('hidden');
-          document.getElementById('btn-stop-cam').classList.add('hidden');
-          document.getElementById('btn-camera').classList.remove('hidden');
-        });
-      }
-    }
-
-    async function verifyPassToken(tokenText) {
-      const rawInput = (tokenText || "").trim();
-      const resultBox = document.getElementById('resultBox');
-
-      if (!rawInput) {
-        alert("Empty pass token.");
-        return;
-      }
-
-      try {
-        const response = await fetch('/api/v1/gate-pass/verify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pass_token: rawInput })
-        });
-
-        const data = await response.json();
-        resultBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-900', 'bg-rose-50', 'border-rose-200', 'text-rose-900');
-
-        if (data.valid) {
-          resultBox.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-900');
-          resultBox.innerHTML = `
-            <div class="flex items-center space-x-1.5 font-bold text-emerald-800">
-              <span>✅ QR SCAN VERIFIED & APPROVED</span>
+            <!-- Action Buttons -->
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="startCameraScanner()" id="startCamBtn" class="py-2.5 bg-[#064E3B] hover:bg-emerald-900 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1">
+                    📷 Scan Camera QR
+                </button>
+                <button onclick="stopCameraScanner()" id="stopCamBtn" class="hidden py-2.5 bg-stone-700 text-white font-bold text-xs rounded-xl transition">
+                    Stop Camera
+                </button>
+                <button onclick="toggleManualInput()" class="py-2.5 bg-stone-100 border border-stone-300 text-stone-800 font-bold text-xs rounded-xl transition">
+                    ⌨️ Manual Token Entry
+                </button>
             </div>
-            <div class="mt-1 space-y-0.5 text-stone-700">
-              <div><strong>Vendor:</strong> ${data.payload.name} (${data.payload.v_id})</div>
-              <div><strong>Canopy #:</strong> <span class="bg-stone-200 px-1 rounded font-bold">${data.payload.canopy}</span></div>
-              <div><strong>Category:</strong> ${data.payload.category}</div>
-              <div><strong>Verification:</strong> <span class="text-emerald-700 font-semibold">${data.payload.verified_by}</span></div>
-              <div><strong>Remaining Time:</strong> ${Math.round(data.remaining_seconds / 60)} minutes</div>
+
+            <!-- Camera Viewfinder Container -->
+            <div id="qr-reader" class="hidden w-full rounded-2xl overflow-hidden border-2 border-dashed border-emerald-600 bg-black"></div>
+
+            <!-- Manual Input Form (Hidden by Default) -->
+            <div id="manualInputContainer" class="hidden space-y-2 pt-1">
+                <input type="text" id="manualTokenInput" placeholder="Paste Pass Token (e.g., DSTK-104-1761678000-a4f91e3b)..." class="w-full bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 font-mono text-xs focus:outline-none focus:border-[#064E3B]">
+                <button onclick="verifyPassToken(document.getElementById('manualTokenInput').value.trim())" class="w-full py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs transition">
+                    Verify Manual Pass
+                </button>
             </div>
-          `;
-        } else {
-          resultBox.classList.add('bg-rose-50', 'border-rose-200', 'text-rose-900');
-          resultBox.innerHTML = `
-            <div class="font-bold text-rose-800">❌ PASS REJECTED / INVALID</div>
-            <div class="mt-0.5 text-rose-700">Reason: ${data.reason}</div>
-          `;
+
+            <!-- Verification Output Result Box -->
+            <div id="verificationResultBox" class="hidden p-4 rounded-2xl border text-xs space-y-2"></div>
+        </section>
+
+        <!-- 2. Pre-Cleared Vendor & Technician Schedule Roster -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h2 class="font-bold text-sm text-stone-800">2. Pre-Cleared Today's Roster</h2>
+                <span class="text-[10px] bg-stone-100 text-stone-600 font-bold px-2 py-0.5 rounded">RWA Pre-Approved</span>
+            </div>
+
+            <div class="space-y-2 text-xs">
+                
+                <!-- Roster Item 1 -->
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-stone-900">Raju Prasad (Hawker #104)</div>
+                        <div class="text-[10px] text-stone-500">Fresh Vegetables • e-Shram Verified</div>
+                    </div>
+                    <button onclick="quickApprove('Raju Prasad', 104, 'Fresh Vegetables')" class="px-3 py-1.5 bg-[#064E3B] text-white font-bold text-[11px] rounded-lg">
+                        Quick Clear
+                    </button>
+                </div>
+
+                <!-- Roster Item 2 -->
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-stone-900">Ramesh Kumar (Artisan #304)</div>
+                        <div class="text-[10px] text-stone-500">Electrician • Skill India Verified</div>
+                    </div>
+                    <button onclick="quickApprove('Ramesh Kumar', 304, 'Electrician')" class="px-3 py-1.5 bg-[#064E3B] text-white font-bold text-[11px] rounded-lg">
+                        Quick Clear
+                    </button>
+                </div>
+
+                <!-- Roster Item 3 -->
+                <div class="p-3 bg-stone-50 rounded-xl border border-stone-200 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-stone-900">Verma Stationery (Stall #201)</div>
+                        <div class="text-[10px] text-stone-500">Fixed Canopy • Commercial Clear</div>
+                    </div>
+                    <button onclick="quickApprove('Verma Stationery', 201, 'Stationery')" class="px-3 py-1.5 bg-[#064E3B] text-white font-bold text-[11px] rounded-lg">
+                        Quick Clear
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="text-center text-[11px] text-stone-400 pt-2">
+            RWA Gate Security Terminal • Dastak Cryptographic Verification Engine
+        </footer>
+    </main>
+
+    <!-- JavaScript Engine -->
+    <script>
+        let html5QrCode = null;
+
+        function toggleManualInput() {
+            const container = document.getElementById('manualInputContainer');
+            container.classList.toggle('hidden');
         }
-      } catch (err) {
-        alert("Failed to connect to backend server. Make sure Uvicorn is running.");
-      }
-    }
 
-    function quickApprove(name, canopy, category) {
-      alert(`✅ ACCESS GRANTED\n\nVendor: ${name}\nCanopy: #${canopy}\nCategory: ${category}\n\nClearance logged in gate registry.`);
-    }
+        function startCameraScanner() {
+            const readerDiv = document.getElementById('qr-reader');
+            const startBtn = document.getElementById('startCamBtn');
+            const stopBtn = document.getElementById('stopCamBtn');
 
-    renderLanguage();
-  </script>
+            readerDiv.classList.remove('hidden');
+            startBtn.classList.add('hidden');
+            stopBtn.classList.remove('hidden');
+
+            html5QrCode = new Html5Qrcode("qr-reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    stopCameraScanner();
+                    verifyPassToken(decodedText);
+                },
+                (errorMessage) => {
+                    // Ignore transient scanning frame noise
+                }
+            ).catch(err => {
+                alert("Unable to open device camera. Make sure camera permissions are granted.");
+                stopCameraScanner();
+            });
+        }
+
+        function stopCameraScanner() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('qr-reader').classList.add('hidden');
+                    document.getElementById('startCamBtn').classList.remove('hidden');
+                    document.getElementById('stopCamBtn').classList.add('hidden');
+                    html5QrCode = null;
+                }).catch(err => console.error(err));
+            } else {
+                document.getElementById('qr-reader').classList.add('hidden');
+                document.getElementById('startCamBtn').classList.remove('hidden');
+                document.getElementById('stopCamBtn').classList.add('hidden');
+            }
+        }
+
+        async function verifyPassToken(tokenText) {
+            const resultBox = document.getElementById('verificationResultBox');
+            if (!tokenText) return;
+
+            resultBox.classList.remove('hidden');
+            resultBox.className = "p-4 rounded-2xl border text-xs space-y-2 bg-stone-100 border-stone-300 text-stone-700";
+            resultBox.innerHTML = "⏳ Authenticating Cryptographic Pass...";
+
+            try {
+                const response = await fetch('/api/v1/gate-pass/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ pass_token: tokenText })
+                });
+
+                const data = await response.json();
+
+                if (data.valid) {
+                    const remainingMins = Math.ceil(data.remaining_seconds / 60);
+                    resultBox.className = "p-4 rounded-2xl border text-xs space-y-2 bg-emerald-50 border-emerald-300 text-emerald-950";
+                    resultBox.innerHTML = `
+                        <div class="flex justify-between items-center border-b border-emerald-200 pb-2">
+                            <span class="font-extrabold text-sm text-emerald-900">✅ ENTRY APPROVED</span>
+                            <span class="bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded font-mono font-bold text-[10px]">HMAC Valid</span>
+                        </div>
+                        <div class="space-y-1">
+                            <div><strong>Name:</strong> ${data.payload.name}</div>
+                            <div><strong>Canopy / Badge #:</strong> #${data.payload.canopy}</div>
+                            <div><strong>Category:</strong> ${data.payload.category || 'Verified Service'}</div>
+                            <div><strong>Verification Source:</strong> ${data.payload.verified_by || 'e-Shram / Skill India'}</div>
+                            <div><strong>Valid Duration:</strong> ${remainingMins} minutes remaining</div>
+                        </div>
+                    `;
+                } else {
+                    resultBox.className = "p-4 rounded-2xl border text-xs space-y-2 bg-rose-50 border-rose-300 text-rose-950";
+                    resultBox.innerHTML = `
+                        <div class="font-extrabold text-sm text-rose-900">❌ PASS REJECTED / INVALID</div>
+                        <div><strong>Reason:</strong> ${data.reason}</div>
+                    `;
+                }
+            } catch (err) {
+                console.error("Verification error:", err);
+                resultBox.className = "p-4 rounded-2xl border text-xs bg-rose-50 border-rose-300 text-rose-950";
+                resultBox.innerHTML = "❌ Connection failed. Ensure FastAPI Uvicorn server is running on port 8000.";
+            }
+        }
+
+        function quickApprove(name, canopy, category) {
+            const resultBox = document.getElementById('verificationResultBox');
+            resultBox.classList.remove('hidden');
+            resultBox.className = "p-4 rounded-2xl border text-xs space-y-2 bg-emerald-50 border-emerald-300 text-emerald-950";
+            resultBox.innerHTML = `
+                <div class="flex justify-between items-center border-b border-emerald-200 pb-2">
+                    <span class="font-extrabold text-sm text-emerald-900">✅ ENTRY APPROVED (RWA Roster)</span>
+                    <span class="bg-emerald-200 text-emerald-900 px-2 py-0.5 rounded font-mono font-bold text-[10px]">Cleared</span>
+                </div>
+                <div class="space-y-1">
+                    <div><strong>Name:</strong> ${name}</div>
+                    <div><strong>Canopy / Badge #:</strong> #${canopy}</div>
+                    <div><strong>Category:</strong> ${category}</div>
+                    <div><strong>Status:</strong> Logged at Gate 1 Register</div>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>

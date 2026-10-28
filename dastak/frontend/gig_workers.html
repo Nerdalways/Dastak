@@ -1,369 +1,229 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-[#FAFAF9]">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Dastak • Skilled Technician Portal | दस्तक कारीगर</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .serif-title { font-family: 'Rozha One', serif; }
-    .cinzel { font-family: 'Cinzel', serif; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dastak • Skilled Technician Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-full flex flex-col justify-between text-[#1C1917] antialiased">
+<body class="bg-[#F5F4F0] min-h-screen text-stone-900 font-sans pb-12 antialiased">
 
-  <!-- TOP HEADER -->
-  <header class="border-b border-[#E7E5E4] bg-white sticky top-0 z-50">
-    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <span class="inline-block w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
-        <h1 id="top-title" class="serif-title text-2xl tracking-wide text-[#1C1917]">दस्तक कारीगर</h1>
-        <span class="cinzel text-[11px] font-bold tracking-widest text-[#78716C] ml-1 pt-1">TECHNICIAN</span>
-      </div>
-      <div class="flex items-center space-x-2">
-        <button id="langToggleBtn" onclick="toggleLanguage()" class="text-xs font-semibold px-2.5 py-1 border border-[#D6D3D1] rounded bg-[#FAFAF9] text-[#44403C] hover:bg-[#F5F5F4] transition-all">
-          हिन्दी
-        </button>
-        <span id="roleBadge" class="text-xs font-semibold px-2 py-1 border border-blue-200 rounded bg-blue-50 text-blue-800">
-          Gig Partner
-        </span>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN CONTAINER -->
-  <main class="max-w-md mx-auto w-full px-4 pt-4 pb-20 flex-1 space-y-4">
-
-    <!-- 1. TECHNICIAN REGISTRATION & IDENTITY -->
-    <section class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
-      <div class="flex items-center justify-between mb-3 border-b border-stone-100 pb-2">
-        <h2 id="sec1-title" class="font-bold text-sm text-[#1C1917]">1. Technician Profile & Credentials</h2>
-        <span id="status-badge" class="text-[10px] font-semibold bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200">
-          Verified
-        </span>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <label id="lbl-name" class="block font-medium text-stone-700 mb-1">Full Name</label>
-          <input type="text" id="workerNameInput" value="Satish Kumar" class="w-full border border-stone-300 rounded p-2 text-stone-900 bg-stone-50 font-medium">
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label id="lbl-trade" class="block font-medium text-stone-700 mb-1">Primary Trade</label>
-            <select id="tradeSelect" class="w-full border border-stone-300 rounded p-2 text-stone-900 bg-stone-50 font-medium" onchange="updateRateCard()">
-              <option value="ELECTRICIAN">⚡ Electrician</option>
-              <option value="PLUMBER">🔧 Plumber</option>
-              <option value="APPLIANCE">❄️ AC / Appliance</option>
-              <option value="CARPENTER">🪚 Carpenter</option>
-            </select>
-          </div>
-          <div>
-            <label id="lbl-verif" class="block font-medium text-stone-700 mb-1">Skill Verification</label>
-            <select id="verificationSelect" class="w-full border border-stone-300 rounded p-2 text-stone-900 bg-stone-50">
-              <option value="Skill India Certified">Skill India Certified</option>
-              <option value="e-Shram Verified">e-Shram Verified</option>
-              <option value="RWA Vetted">RWA Vetted (5+ Yrs)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- PHOTO UPLOAD & PREVIEW SECTION -->
-        <div class="border-t border-stone-100 pt-3">
-          <label id="lbl-photos" class="block font-medium text-stone-700 mb-2">Upload Profile & Toolkit Photos</label>
-          <div class="grid grid-cols-2 gap-3">
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
             
-            <!-- TOOLKIT PHOTO -->
-            <div class="border-2 border-dashed border-stone-300 rounded-lg p-2 text-center bg-stone-50 hover:bg-stone-100 relative cursor-pointer" onclick="document.getElementById('toolPhotoFile').click()">
-              <input type="file" id="toolPhotoFile" accept="image/*" class="hidden" onchange="previewPhoto(event, 'toolPreview', 'toolPlaceholder')">
-              <div id="toolPlaceholder">
-                <svg class="w-6 h-6 mx-auto text-stone-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
-                <span id="txt-tool-photo" class="text-[11px] font-semibold text-stone-600 block">Toolkit Photo</span>
-                <span id="txt-tool-sub" class="text-[10px] text-stone-400 block">(Click to upload)</span>
-              </div>
-              <img id="toolPreview" class="hidden w-full h-24 object-cover rounded shadow-sm" alt="Toolkit Preview">
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 22 32 A 28 28 0 0 0 22 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 78 32 A 28 28 0 0 0 78 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 50 15 C 34 15 22 27 22 43 C 22 63 50 85 50 85 C 50 85 78 63 78 43 C 78 27 66 15 50 15 Z" fill="#064E3B"/>
+                    <circle cx="50" cy="43" r="14" fill="white"/>
+                    <circle cx="50" cy="43" r="13" stroke="#064E3B" stroke-width="2" fill="none"/>
+                    <line x1="50" y1="30" x2="50" y2="56" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="37" y1="43" x2="63" y2="43" stroke="#064E3B" stroke-width="2"/>
+                </svg>
+
+                <div class="flex flex-col">
+                    <div class="flex items-baseline space-x-1">
+                        <span class="font-extrabold text-lg tracking-tight text-[#064E3B]">DASTAK</span>
+                        <span class="text-[10px] font-semibold text-amber-700">दस्तक</span>
+                    </div>
+                    <span class="text-[9px] font-semibold text-stone-500 uppercase tracking-widest">GIG TECHNICIAN</span>
+                </div>
             </div>
 
-            <!-- WORKER PORTRAIT PHOTO -->
-            <div class="border-2 border-dashed border-stone-300 rounded-lg p-2 text-center bg-stone-50 hover:bg-stone-100 relative cursor-pointer" onclick="document.getElementById('workerPhotoFile').click()">
-              <input type="file" id="workerPhotoFile" accept="image/*" class="hidden" onchange="previewPhoto(event, 'workerPreview', 'workerPlaceholder')">
-              <div id="workerPlaceholder">
-                <svg class="w-6 h-6 mx-auto text-stone-400 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                <span id="txt-face-photo" class="text-[11px] font-semibold text-stone-600 block">Technician Portrait</span>
-                <span id="txt-face-sub" class="text-[10px] text-stone-400 block">(Click to upload)</span>
-              </div>
-              <img id="workerPreview" class="hidden w-full h-24 object-cover rounded shadow-sm" alt="Worker Preview">
+            <span id="verificationBadge" class="text-xs font-semibold px-2.5 py-1 bg-amber-50 border border-amber-300 text-amber-800 rounded-full">
+                Verification Pending
+            </span>
+        </div>
+
+        <nav class="bg-[#064E3B] text-stone-200 text-[11px] py-1.5 px-4 flex justify-around font-medium border-t border-emerald-900">
+            <a href="/" class="hover:text-amber-400">Resident</a>
+            <span>•</span>
+            <a href="/partner" class="hover:text-amber-400">Vendor</a>
+            <span>•</span>
+            <a href="/technician" class="text-amber-400 font-bold">Technician</a>
+            <span>•</span>
+            <a href="/guard" class="hover:text-amber-400">Security Guard</a>
+        </nav>
+    </header>
+
+    <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
+
+        <!-- Mandatory Skill India / e-Shram Identity Verification Module -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h2 class="font-bold text-sm text-stone-800">1. Verification Credentials</h2>
+                <span class="text-[10px] bg-stone-100 text-stone-600 font-bold px-2 py-0.5 rounded">Required for Clearance</span>
             </div>
 
-          </div>
-        </div>
-      </div>
-    </section>
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-stone-600 font-medium mb-1">Full Name</label>
+                    <input type="text" id="techNameInput" value="Ramesh Kumar" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600">
+                </div>
 
-    <!-- 2. COMMUNITY RATE CARD -->
-    <section class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
-      <div class="flex items-center justify-between mb-2">
-        <h2 id="sec2-title" class="font-bold text-sm text-[#1C1917]">2. Standardized Rate Card (100% Retained)</h2>
-        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-          0% Commission
-        </span>
-      </div>
-      <p id="sec2-sub" class="text-xs text-stone-500 mb-3">Transparent neighborhood rates. Direct client settlement via UPI/Cash:</p>
-      
-      <div id="rateCardContainer" class="space-y-1.5 text-xs">
-        <!-- Rendered dynamically based on trade selection -->
-      </div>
-    </section>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-stone-600 font-medium mb-1">Badge #</label>
+                        <input type="number" id="techCanopyInput" value="304" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-stone-600 font-medium mb-1">Specialization</label>
+                        <select id="techTradeSelect" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600 text-xs">
+                            <option value="ELECTRICIAN">⚡ Electrician</option>
+                            <option value="PLUMBER">🪠 Plumber</option>
+                            <option value="CARPENTER">🪚 Carpenter</option>
+                            <option value="AC_MECHANIC">❄️ AC Mechanic</option>
+                        </select>
+                    </div>
+                </div>
 
-    <!-- 3. CAMPUS AVAILABILITY & ENTRY PASS -->
-    <section class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm text-center">
-      <h2 id="sec3-title" class="font-bold text-sm text-[#1C1917] mb-2">3. Campus Presence & Security Pass</h2>
-      
-      <div class="flex items-center justify-center space-x-2 mb-3">
-        <label id="lbl-presence" class="text-xs font-semibold text-stone-700">Active Campus:</label>
-        <select id="campusSelect" class="border border-stone-300 rounded px-2 py-1 text-xs bg-stone-50 font-bold">
-          <option value="ROHINI_SEC9_TOWER_B">Rohini Sec 9 (Tower B)</option>
-          <option value="ROHINI_SEC9_TOWER_C">Rohini Sec 9 (Tower C)</option>
-          <option value="DWARKA_SEC12_POCKET1">Dwarka Sec 12 (Pocket 1)</option>
-        </select>
-      </div>
+                <!-- Credential Verification Inputs -->
+                <div class="space-y-2 bg-stone-50 p-3 rounded-xl border border-stone-200">
+                    <div>
+                        <label class="block text-stone-600 font-medium mb-1">Skill India Certificate / e-Shram UAN #</label>
+                        <input type="text" id="certNumberInput" value="NSDC-EL-2026-8942" class="w-full bg-white border border-stone-300 rounded-lg px-3 py-1.5 text-stone-800 font-mono text-xs focus:outline-none focus:border-emerald-600">
+                    </div>
 
-      <button id="presenceToggleBtn" onclick="togglePresence()" class="w-full py-3 px-4 rounded-lg bg-blue-600 text-white font-bold text-sm shadow hover:bg-blue-700 active:scale-98 transition-all">
-        Broadcasting Availability (Enter Campus)
-      </button>
+                    <div class="flex items-center space-x-2 pt-1">
+                        <input type="checkbox" id="policeDeclaration" class="w-4 h-4 text-emerald-800 rounded border-stone-300 focus:ring-emerald-600" onchange="checkVerificationStatus()">
+                        <label for="policeDeclaration" class="text-[11px] text-stone-600 font-medium">
+                            I declare valid Police Clearance & Skill Certification
+                        </label>
+                    </div>
+                </div>
 
-      <div id="activePresenceCard" class="hidden mt-4 pt-4 border-t border-stone-100 text-left space-y-2 text-xs">
-        <div class="flex justify-between items-center">
-          <span id="txt-pass-status-lbl" class="text-stone-500">Gate Security Token:</span>
-          <span id="txt-pass-status-val" class="font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-            HMAC-SHA256 Authorized
-          </span>
-        </div>
-        <div class="p-2.5 bg-stone-50 rounded border border-stone-200 font-mono text-[11px] text-stone-800 break-all" id="passTokenBox">
-          Generating cryptographic token...
-        </div>
-        <p id="txt-pass-hint" class="text-[11px] text-stone-500">
-          💡 You are now visible to nearby residents for add-on micro-repairs without gate friction.
-        </p>
-      </div>
-    </section>
+                <button onclick="verifyCredentials()" id="verifyBtn" class="w-full py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs transition">
+                    Verify via Skill India / e-Shram Sandbox 🛡️
+                </button>
+            </div>
+        </section>
 
-  </main>
+        <!-- Availability Toggle & Gate Pass Generator -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <h2 class="font-bold text-sm text-stone-800 border-b border-stone-100 pb-2">2. Campus Gate Clearance Pass</h2>
 
-  <!-- BOTTOM FOOTER -->
-  <footer class="border-t border-[#E7E5E4] bg-white py-3 text-center text-[11px] text-[#78716C]">
-    <div class="max-w-md mx-auto px-4 flex justify-between items-center">
-      <span id="footer-left">Zero Platform Commission • TDM Benchmark</span>
-      <span id="footer-right" class="font-medium text-[#1C1917]">Direct UPI / Cash Settlement</span>
-    </div>
-  </footer>
+            <button id="techShiftBtn" disabled onclick="toggleTechShift()" class="w-full py-3.5 bg-stone-300 text-stone-500 font-bold rounded-xl text-base transition shadow-sm cursor-not-allowed">
+                Complete Verification First
+            </button>
 
-  <!-- JAVASCRIPT LOGIC -->
-  <script>
-    let isPresentActive = false;
-    let currentLang = 'en';
+            <div id="techPassContainer" class="hidden space-y-3 pt-2">
+                <div class="flex justify-between items-center text-xs font-medium">
+                    <span class="text-stone-500">Security Clearance Status:</span>
+                    <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-md font-mono text-[11px] font-bold">HMAC-SHA256 Authorized</span>
+                </div>
 
-    const RATE_CARDS = {
-      ELECTRICIAN: [
-        { en: "Switch / Socket Replacement", hi: "स्विच / सॉकेट बदलना", rate: "₹79" },
-        { en: "Ceiling Fan Capacitor / Regulator", hi: "पंखा कैपेसिटर / रेगुलेटर", rate: "₹120" },
-        { en: "MCB Trip / Short Circuit Check", hi: "MCB ट्रिप / शॉर्ट सर्किट जांच", rate: "₹149" }
-      ],
-      PLUMBER: [
-        { en: "Faucet Washer / Leak Repair", hi: "नल का वॉशर / लीकेज ठीक करना", rate: "₹89" },
-        { en: "Flush Tank Syphon Repair", hi: "फ्लश सिफ़न / वाल्व मरम्मत", rate: "₹149" },
-        { en: "Kitchen Sink Trap Cleaning", hi: "सिंक पाइप सफाई एवं ब्लॉकेज", rate: "₹119" }
-      ],
-      APPLIANCE: [
-        { en: "RO Water Filter Service", hi: "RO वाटर फ़िल्टर सर्विस", rate: "₹199" },
-        { en: "AC Foam Jet Cleaning", hi: "AC सर्विस एवं फोम क्लीनिंग", rate: "₹399" },
-        { en: "Washing Machine Motor Check", hi: "वॉशिंग मशीन मोटर जांच", rate: "₹149" }
-      ],
-      CARPENTER: [
-        { en: "Door Lock / Latch Repair", hi: "दरवाजे का ताला / सिटकनी ठीक करना", rate: "₹99" },
-        { en: "Cabinet Hinge Replacement", hi: "कब्ज़ा / चैनल बदलना", rate: "₹129" },
-        { en: "Chair / Wooden Joint Repair", hi: "कुर्सी / फर्नीचर जोड़ मरम्मत", rate: "₹149" }
-      ]
-    };
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 flex flex-col items-center justify-center space-y-2">
+                    <div class="p-2.5 bg-white rounded-xl shadow-sm border border-stone-200 flex items-center justify-center">
+                        <img id="techQrImage" src="" alt="Gate Pass QR" class="w-40 h-40 object-contain">
+                    </div>
+                    <p class="font-semibold text-xs text-stone-700 text-center">Present this QR code to the Gate Guard upon entry</p>
+                </div>
 
-    const I18N = {
-      en: {
-        langBtn: "हिन्दी",
-        roleBadge: "Gig Partner",
-        sec1Title: "1. Technician Profile & Credentials",
-        statusBadge: "Verified",
-        lblName: "Full Name",
-        lblTrade: "Primary Trade",
-        lblVerif: "Skill Verification",
-        lblPhotos: "Upload Profile & Toolkit Photos",
-        toolPhoto: "Toolkit Photo",
-        toolSub: "(Click to upload)",
-        facePhoto: "Technician Portrait",
-        faceSub: "(Click to upload)",
-        sec2Title: "2. Standardized Rate Card (100% Retained)",
-        sec2Sub: "Transparent neighborhood rates. Direct client settlement via UPI/Cash:",
-        sec3Title: "3. Campus Presence & Security Pass",
-        lblPresence: "Active Campus:",
-        btnStart: "Broadcasting Availability (Enter Campus)",
-        btnEnd: "Leave Campus (End Availability)",
-        passStatusLbl: "Gate Security Token:",
-        passStatusVal: "HMAC-SHA256 Authorized",
-        passHint: "💡 You are now visible to nearby residents for add-on micro-repairs without gate friction.",
-        footerLeft: "Zero Platform Commission • TDM Benchmark",
-        footerRight: "Direct UPI / Cash Settlement",
-        alertStartError: "Error generating security gate pass. Check if FastAPI backend is running."
-      },
-      hi: {
-        langBtn: "English",
-        roleBadge: "कारीगर साथी",
-        sec1Title: "1. कारीगर प्रोफाइल एवं प्रमाणन",
-        statusBadge: "सत्यापित",
-        lblName: "पूरा नाम",
-        lblTrade: "मुख्य हुनर (ट्रेड)",
-        lblVerif: "कौशल प्रमाणन",
-        lblPhotos: "अपनी फोटो और औजारों (टूलकिट) की फोटो लगाएं",
-        toolPhoto: "औजारों की फोटो",
-        toolSub: "(अपलोड के लिए क्लिक करें)",
-        facePhoto: "अपनी फोटो (पोर्ट्रेट)",
-        faceSub: "(अपलोड के लिए क्लिक करें)",
-        sec2Title: "2. तयशुदा मोहल्ला रेट कार्ड (100% कमाई आपकी)",
-        sec2Sub: "पारदर्शी स्थानीय दरें। सीधे ग्राहक से UPI या नकद में भुगतान लें:",
-        sec3Title: "3. सोसायटी प्रवेश एवं डिजिटल गेट पास",
-        lblPresence: "मौजूदा सोसायटी:",
-        btnStart: "काम शुरू करें (सोसायटी में उपलब्ध)",
-        btnEnd: "काम समाप्त करें (बाहर निकलें)",
-        passStatusLbl: "सुरक्षा गेट टोकन:",
-        passStatusVal: "HMAC-SHA256 स्वीकृत",
-        passHint: "💡 अब आप सोसायटी के सभी निवासियों को तुरंत उपलब्ध दिखेंगे। बिना कमीशन पूरा पैसा आपका।",
-        footerLeft: "0% कमीशन • स्थानीय निष्पक्ष दरें",
-        footerRight: "सीधा भुगतान (UPI / नकद)",
-        alertStartError: "गेट पास जनरेट करने में त्रुटि आई। सुनिश्चित करें कि बैकएंड चालू है।"
-      }
-    };
+                <input type="text" id="techPassTokenInput" readonly class="w-full bg-stone-50 border border-stone-200 rounded-lg p-2 font-mono text-[10px] text-stone-600 focus:outline-none text-center font-bold">
+            </div>
+        </section>
+    </main>
 
-    function updateRateCard() {
-      const trade = document.getElementById('tradeSelect').value;
-      const items = RATE_CARDS[trade] || [];
-      const container = document.getElementById('rateCardContainer');
-      container.innerHTML = '';
+    <script>
+        let isVerified = false;
+        let isTechActive = false;
 
-      items.forEach(item => {
-        const title = (currentLang === 'hi') ? item.hi : item.en;
-        const row = document.createElement('div');
-        row.className = "flex justify-between items-center p-2 rounded bg-stone-50 border border-stone-200";
-        row.innerHTML = `
-          <span class="font-medium text-stone-800">${title}</span>
-          <span class="font-bold text-stone-900">${item.rate}</span>
-        `;
-        container.appendChild(row);
-      });
-    }
+        function checkVerificationStatus() {
+            const cert = document.getElementById('certNumberInput').value.trim();
+            const checkbox = document.getElementById('policeDeclaration').checked;
+            const verifyBtn = document.getElementById('verifyBtn');
 
-    function renderLanguage() {
-      const d = I18N[currentLang];
-      document.getElementById('langToggleBtn').textContent = d.langBtn;
-      document.getElementById('roleBadge').textContent = d.roleBadge;
-      document.getElementById('sec1-title').textContent = d.sec1Title;
-      document.getElementById('status-badge').textContent = d.statusBadge;
-      document.getElementById('lbl-name').textContent = d.lblName;
-      document.getElementById('lbl-trade').textContent = d.lblTrade;
-      document.getElementById('lbl-verif').textContent = d.lblVerif;
-      document.getElementById('lbl-photos').textContent = d.lblPhotos;
-      document.getElementById('txt-tool-photo').textContent = d.toolPhoto;
-      document.getElementById('txt-tool-sub').textContent = d.toolSub;
-      document.getElementById('txt-face-photo').textContent = d.facePhoto;
-      document.getElementById('txt-face-sub').textContent = d.faceSub;
-      document.getElementById('sec2-title').textContent = d.sec2Title;
-      document.getElementById('sec2-sub').textContent = d.sec2Sub;
-      document.getElementById('sec3-title').textContent = d.sec3Title;
-      document.getElementById('lbl-presence').textContent = d.lblPresence;
-      
-      const btn = document.getElementById('presenceToggleBtn');
-      btn.textContent = isPresentActive ? d.btnEnd : d.btnStart;
-
-      document.getElementById('txt-pass-status-lbl').textContent = d.passStatusLbl;
-      document.getElementById('txt-pass-status-val').textContent = d.passStatusVal;
-      document.getElementById('txt-pass-hint').textContent = d.passHint;
-      document.getElementById('footer-left').textContent = d.footerLeft;
-      document.getElementById('footer-right').textContent = d.footerRight;
-
-      updateRateCard();
-    }
-
-    function toggleLanguage() {
-      currentLang = (currentLang === 'en') ? 'hi' : 'en';
-      renderLanguage();
-    }
-
-    function previewPhoto(event, imgId, placeholderId) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const img = document.getElementById(imgId);
-          img.src = e.target.result;
-          img.classList.remove('hidden');
-          document.getElementById(placeholderId).classList.add('hidden');
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    async function togglePresence() {
-      const btn = document.getElementById('presenceToggleBtn');
-      const presenceCard = document.getElementById('activePresenceCard');
-      const tokenBox = document.getElementById('passTokenBox');
-      const d = I18N[currentLang];
-      const campus = document.getElementById('campusSelect').value;
-
-      if (!isPresentActive) {
-        try {
-          const response = await fetch('/api/v1/gate-pass/generate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              vendor_id: "GIG-TECH-408",
-              society_id: campus,
-              duration_minutes: 120
-            })
-          });
-
-          if (response.ok) {
-            const data = await response.json();
-            tokenBox.textContent = data.pass_token;
-            isPresentActive = true;
-            btn.textContent = d.btnEnd;
-            btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-            btn.classList.add('bg-rose-600', 'hover:bg-rose-700');
-            presenceCard.classList.remove('hidden');
-          } else {
-            alert(d.alertStartError);
-          }
-        } catch (err) {
-          // Dev offline simulation token
-          tokenBox.textContent = "SIMULATED_HMAC_GIG_TECH_PASS_VALID_120MIN";
-          isPresentActive = true;
-          btn.textContent = d.btnEnd;
-          btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-          btn.classList.add('bg-rose-600', 'hover:bg-rose-700');
-          presenceCard.classList.remove('hidden');
+            if (cert.length > 5 && checkbox) {
+                verifyBtn.className = "w-full py-2 bg-[#064E3B] hover:bg-emerald-900 text-white font-bold rounded-xl text-xs transition";
+            } else {
+                verifyBtn.className = "w-full py-2 bg-stone-900 hover:bg-black text-white font-bold rounded-xl text-xs transition";
+            }
         }
-      } else {
-        isPresentActive = false;
-        btn.textContent = d.btnStart;
-        btn.classList.remove('bg-rose-600', 'hover:bg-rose-700');
-        btn.classList.add('bg-blue-600', 'hover:bg-blue-700');
-        presenceCard.classList.add('hidden');
-      }
-    }
 
-    // Default initialization
-    renderLanguage();
-  </script>
+        function verifyCredentials() {
+            const cert = document.getElementById('certNumberInput').value.trim();
+            const checkbox = document.getElementById('policeDeclaration').checked;
+            const badge = document.getElementById('verificationBadge');
+            const shiftBtn = document.getElementById('techShiftBtn');
+
+            if (!cert || cert.length < 5) {
+                alert("Please enter a valid Skill India or e-Shram credential number.");
+                return;
+            }
+
+            if (!checkbox) {
+                alert("You must declare valid background verification.");
+                return;
+            }
+
+            isVerified = true;
+            badge.innerText = "e-Shram & Skill India Verified";
+            badge.className = "text-xs font-semibold px-2.5 py-1 bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-full";
+
+            shiftBtn.disabled = false;
+            shiftBtn.innerText = "Broadcasting Availability (Enter Campus)";
+            shiftBtn.className = "w-full py-3.5 bg-[#064E3B] hover:bg-emerald-900 text-white font-bold rounded-xl text-base transition shadow-sm cursor-pointer";
+
+            alert("Credential Verified via Public Infrastructure Sandbox! You can now enter the campus.");
+        }
+
+        async function toggleTechShift() {
+            if (!isVerified) {
+                alert("Only verified technicians are permitted on campus.");
+                return;
+            }
+
+            const shiftBtn = document.getElementById('techShiftBtn');
+            const passContainer = document.getElementById('techPassContainer');
+            const tokenInput = document.getElementById('techPassTokenInput');
+            const qrImage = document.getElementById('techQrImage');
+
+            const name = document.getElementById('techNameInput').value.trim() || "Ramesh Kumar";
+            const canopy = parseInt(document.getElementById('techCanopyInput').value) || 304;
+            const category = document.getElementById('techTradeSelect').value;
+
+            if (!isTechActive) {
+                shiftBtn.disabled = true;
+                shiftBtn.innerText = "Generating Security Pass...";
+
+                try {
+                    const response = await fetch('/api/v1/shift/start', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            worker_id: "GIG-TECH-" + canopy,
+                            name: name,
+                            category: category,
+                            canopy_number: canopy
+                        })
+                    });
+
+                    const data = await response.json();
+                    const token = data.gate_pass.pass_token;
+
+                    tokenInput.value = token;
+                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(token)}`;
+                    passContainer.classList.remove('hidden');
+
+                    isTechActive = true;
+                    shiftBtn.innerText = "Leave Campus (End Availability)";
+                    shiftBtn.className = "w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-base transition shadow-sm cursor-pointer";
+
+                } catch (err) {
+                    alert("Failed to connect to backend server.");
+                    shiftBtn.innerText = "Broadcasting Availability (Enter Campus)";
+                } finally {
+                    shiftBtn.disabled = false;
+                }
+            } else {
+                isTechActive = false;
+                passContainer.classList.add('hidden');
+                shiftBtn.innerText = "Broadcasting Availability (Enter Campus)";
+                shiftBtn.className = "w-full py-3.5 bg-[#064E3B] hover:bg-emerald-900 text-white font-bold rounded-xl text-base transition shadow-sm cursor-pointer";
+            }
+        }
+    </script>
 </body>
 </html>

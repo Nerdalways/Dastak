@@ -3,36 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dastak • Vendor Partner Console</title>
+    <title>Dastak • Multi-Category Vendor Partner Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
-<body class="bg-stone-100 min-h-screen text-stone-900 font-sans pb-12">
+<body class="bg-[#F5F4F0] min-h-screen text-stone-900 font-sans pb-12 antialiased">
 
-    <!-- Header Navigation -->
+    <!-- Unified Header Navigation -->
     <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
-        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <h1 class="font-bold text-xl tracking-tight text-stone-900">दस्तक साथी <span class="text-xs font-normal text-stone-500 uppercase tracking-widest ml-1">PARTNER</span></h1>
+        <div class="max-w-md mx-auto px-4 py-2.5 flex justify-between items-center">
+            
+            <!-- OFFICIAL DASTAK BRAND LOGO -->
+            <div class="flex items-center space-x-2">
+                <svg class="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 22 32 A 28 28 0 0 0 22 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 78 32 A 28 28 0 0 1 78 68" stroke="#D97706" stroke-width="7" stroke-linecap="round"/>
+                    <path d="M 50 15 C 34 15 22 27 22 43 C 22 63 50 85 50 85 C 50 85 78 63 78 43 C 78 27 66 15 50 15 Z" fill="#064E3B"/>
+                    <circle cx="50" cy="43" r="14" fill="white"/>
+                    <circle cx="50" cy="43" r="13" stroke="#064E3B" stroke-width="2" fill="none"/>
+                    <line x1="50" y1="30" x2="50" y2="56" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="37" y1="43" x2="63" y2="43" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="40.8" y1="33.8" x2="59.2" y2="52.2" stroke="#064E3B" stroke-width="2"/>
+                    <line x1="40.8" y1="52.2" x2="59.2" y2="33.8" stroke="#064E3B" stroke-width="2"/>
+                </svg>
+
+                <div class="flex flex-col">
+                    <div class="flex items-baseline space-x-1">
+                        <span class="font-extrabold text-lg tracking-tight text-[#064E3B]">DASTAK</span>
+                        <span class="text-[10px] font-semibold text-amber-700 tracking-wider">दस्तक</span>
+                    </div>
+                    <span class="text-[9px] font-semibold text-stone-500 uppercase tracking-widest">PARTNER PORTAL</span>
+                </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="toggleLanguage()" id="langBtn" class="text-xs font-medium px-3 py-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-full text-stone-700 transition">
+
+            <!-- Header Controls -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleLanguage()" id="langBtn" class="text-xs font-semibold px-3 py-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-full text-stone-700 transition">
                     हिन्दी
                 </button>
-                <span class="text-xs font-medium px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-full text-stone-600">Vendor Portal</span>
             </div>
         </div>
+
+        <!-- Portal Router Bar -->
+        <nav class="bg-[#064E3B] text-stone-200 text-[11px] py-1.5 px-4 flex justify-around font-medium border-t border-emerald-900">
+            <a href="/" class="hover:text-amber-400">Resident</a>
+            <span>•</span>
+            <a href="/partner" class="text-amber-400 font-bold">Vendor</a>
+            <span>•</span>
+            <a href="/technician" class="hover:text-amber-400">Technician</a>
+            <span>•</span>
+            <a href="/guard" class="hover:text-amber-400">Security Guard</a>
+        </nav>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Content -->
     <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
 
-        <!-- 1. Vendor Registration & Photos Card -->
+        <!-- Tagline Banner -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl px-3 py-1.5 flex items-center justify-between text-xs text-amber-900 font-medium">
+            <span id="txt-tagline">Shor band, sewa shuru</span>
+            <span class="text-[10px] bg-amber-200 text-amber-800 px-2 py-0.5 rounded font-bold">CPCB 55 dB</span>
+        </div>
+
+        <!-- 1. Vendor Registration & Trade Category -->
         <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
             <div class="flex justify-between items-center border-b border-stone-100 pb-2">
-                <h2 class="font-bold text-sm text-stone-800" id="sec1-title">1. Vendor Registration & Photos</h2>
-                <span class="text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">Verified</span>
+                <h2 class="font-bold text-sm text-stone-800" id="sec1-title">1. Vendor Registration & Trade</h2>
+                <span class="text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">e-Shram Verified</span>
             </div>
 
             <div class="space-y-3 text-xs">
@@ -47,20 +83,22 @@
                         <input type="number" id="canopyInput" value="104" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600">
                     </div>
                     <div>
-                        <label class="block text-stone-600 font-medium mb-1" id="lbl-status">Verification Source</label>
-                        <div class="bg-stone-50 text-stone-700 font-medium px-3 py-2 rounded-xl border border-stone-200 text-xs flex justify-between items-center">
-                            <span>e-Shram Verified</span>
-                            <span>▼</span>
-                        </div>
+                        <label class="block text-stone-600 font-medium mb-1" id="lbl-category">Trade Category</label>
+                        <select id="tradeCategorySelect" onchange="onCategoryChange()" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-2.5 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600 text-xs">
+                            <option value="PRODUCE" selected>🥬 Vegetables & Fruits</option>
+                            <option value="FOOD">🍲 Prepared Street Food</option>
+                            <option value="APPAREL">👕 Clothes & Goods</option>
+                            <option value="KABADI">♻️ Kabadi & Scrap Pickup</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="pt-1">
-                    <label class="block text-stone-600 font-medium mb-1.5" id="lbl-photos">Upload Pushcart/Stall & Facial Photo</label>
+                    <label class="block text-stone-600 font-medium mb-1.5" id="lbl-photos">Upload Stall/Vehicle & Profile Photo</label>
                     <div class="grid grid-cols-2 gap-3">
                         <div class="border-2 border-dashed border-stone-200 rounded-xl p-3 text-center bg-stone-50 flex flex-col items-center justify-center cursor-pointer hover:bg-stone-100 transition">
                             <span class="text-xl mb-1">📷</span>
-                            <span class="font-semibold text-stone-700 text-[11px]">Stall / Cart Photo</span>
+                            <span class="font-semibold text-stone-700 text-[11px]" id="txt-stall-photo">Stall / Cart Photo</span>
                             <span class="text-[9px] text-stone-400">(Click to upload)</span>
                         </div>
                         <div class="border-2 border-dashed border-stone-200 rounded-xl p-3 text-center bg-stone-50 flex flex-col items-center justify-center cursor-pointer hover:bg-stone-100 transition">
@@ -73,39 +111,26 @@
             </div>
         </section>
 
-        <!-- 2. Select Today's Produce Preset Card -->
+        <!-- 2. Dynamic Today's Offering / Inventory Preset -->
         <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
             <div>
-                <h2 class="font-bold text-sm text-stone-800" id="sec2-title">2. Select Today's Produce Preset</h2>
-                <p class="text-[11px] text-stone-500 mt-0.5">One-tap baseline setup without typing line items:</p>
+                <h2 class="font-bold text-sm text-stone-800" id="sec2-title">2. Select Today's Service Preset</h2>
+                <p class="text-[11px] text-stone-500 mt-0.5" id="sec2-sub">One-tap baseline setup without typing line items:</p>
             </div>
 
-            <div class="grid grid-cols-3 gap-2">
-                <button onclick="selectPreset('STAPLES', this)" class="preset-btn bg-emerald-50 border-2 border-emerald-600 p-3 rounded-xl text-left transition">
-                    <div class="text-xl">🥔</div>
-                    <div class="font-bold text-xs text-stone-900 mt-1" id="preset1-title">Staples Basket</div>
-                    <div class="text-[10px] text-stone-500 mt-0.5" id="preset1-sub">Potatoes & Onions</div>
-                </button>
-                <button onclick="selectPreset('GREENS', this)" class="preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100">
-                    <div class="text-xl">🥬</div>
-                    <div class="font-bold text-xs text-stone-900 mt-1" id="preset2-title">Fresh Greens</div>
-                    <div class="text-[10px] text-stone-500 mt-0.5" id="preset2-sub">Spinach & Herbs</div>
-                </button>
-                <button onclick="selectPreset('FRUITS', this)" class="preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100">
-                    <div class="text-xl">🍓</div>
-                    <div class="font-bold text-xs text-stone-900 mt-1" id="preset3-title">Seasonal Fruits</div>
-                    <div class="text-[10px] text-stone-500 mt-0.5" id="preset3-sub">Apples & Citrus</div>
-                </button>
+            <!-- Dynamic Preset Grid -->
+            <div id="presetGrid" class="grid grid-cols-3 gap-2">
+                <!-- Injected via JavaScript based on selected Category -->
             </div>
         </section>
 
-        <!-- 3. Shift Clearance & Digital Gate Pass Card -->
+        <!-- 3. Shift Clearance & Digital Gate Pass -->
         <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
             <h2 class="font-bold text-sm text-stone-800 text-center border-b border-stone-100 pb-2" id="sec3-title">
                 3. Shift Clearance & Digital Gate Pass
             </h2>
 
-            <button id="shiftBtn" onclick="toggleShift()" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-base transition shadow-sm">
+            <button id="shiftBtn" onclick="toggleShift()" class="w-full py-3.5 bg-[#064E3B] hover:bg-emerald-900 text-white font-bold rounded-xl text-base transition shadow-sm">
                 Start My Shift
             </button>
 
@@ -116,9 +141,11 @@
                     <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-md font-mono text-[11px] font-bold">HMAC-SHA256 Cleared</span>
                 </div>
 
-                <!-- QR Display Box -->
+                <!-- Live Vector QR Image -->
                 <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 flex flex-col items-center justify-center space-y-2">
-                    <div id="qrcode" class="p-2.5 bg-white rounded-xl shadow-sm border border-stone-100"></div>
+                    <div class="p-2.5 bg-white rounded-xl shadow-sm border border-stone-200 flex items-center justify-center">
+                        <img id="qrImage" src="" alt="Gate Pass QR" class="w-40 h-40 object-contain">
+                    </div>
                     <p class="font-semibold text-xs text-stone-700 text-center" id="qr-instruction">Show this QR code to the Guard at Gate 1</p>
                 </div>
 
@@ -138,23 +165,56 @@
     <!-- JavaScript Engine -->
     <script>
         let isShiftActive = false;
-        let selectedPreset = 'STAPLES';
+        let selectedPreset = '';
+        let currentCategory = 'PRODUCE';
         let currentLang = 'EN';
+
+        // Trade Category Configurations
+        const categoryPresets = {
+            PRODUCE: {
+                stallPhotoLabel: "Pushcart Photo",
+                presets: [
+                    { id: 'STAPLES', icon: '🥔', title: 'Staples Basket', sub: 'Potatoes & Onions' },
+                    { id: 'GREENS', icon: '🥬', title: 'Fresh Greens', sub: 'Spinach & Herbs' },
+                    { id: 'FRUITS', icon: '🍓', title: 'Seasonal Fruits', sub: 'Apples & Citrus' }
+                ]
+            },
+            FOOD: {
+                stallPhotoLabel: "Food Cart / Stall",
+                presets: [
+                    { id: 'CHAAT', icon: '🍲', title: 'Chaat & Snacks', sub: 'Samosa, Golgappa' },
+                    { id: 'TEA', icon: '☕', title: 'Tea & Breakfast', sub: 'Masala Chai, Poha' },
+                    { id: 'SWEETS', icon: '🪔', title: 'Fresh Sweets', sub: 'Jalebi & Imarti' }
+                ]
+            },
+            APPAREL: {
+                stallPhotoLabel: "Display Mat / Stall",
+                presets: [
+                    { id: 'CLOTHES', icon: '👕', title: 'Dailywear Clothes', sub: 'Cotton Shirts, Kurtis' },
+                    { id: 'FOOTWEAR', icon: '👟', title: 'Footwear & Socks', sub: 'Slippers & Socks' },
+                    { id: 'HOUSEHOLD', icon: '🧺', title: 'Household Goods', sub: 'Mats, Covers, Plastic' }
+                ]
+            },
+            KABADI: {
+                stallPhotoLabel: "Tricycle / Cart Photo",
+                presets: [
+                    { id: 'PAPER', icon: '📰', title: 'Paper & Cardboard', sub: 'Old Books, Raddi' },
+                    { id: 'METALS', icon: '🛢️', title: 'Metals & Plastics', sub: 'Scrap Metal & Bottles' },
+                    { id: 'EWASTE', icon: '🔌', title: 'E-Waste & Appliances', sub: 'Old Motors & Wires' }
+                ]
+            }
+        };
 
         const translations = {
             EN: {
                 langBtn: "हिन्दी",
-                sec1: "1. Vendor Registration & Photos",
+                tagline: "Shor band, sewa shuru",
+                sec1: "1. Vendor Registration & Trade",
                 vendorName: "Full Name",
                 canopy: "Canopy Badge #",
-                photos: "Upload Pushcart/Stall & Facial Photo",
-                sec2: "2. Select Today's Produce Preset",
-                preset1: "Staples Basket",
-                preset1_sub: "Potatoes & Onions",
-                preset2: "Fresh Greens",
-                preset2_sub: "Spinach & Herbs",
-                preset3: "Seasonal Fruits",
-                preset3_sub: "Apples & Citrus",
+                category: "Trade Category",
+                photos: "Upload Stall/Vehicle & Profile Photo",
+                sec2: "2. Select Today's Service Preset",
                 sec3: "3. Shift Clearance & Digital Gate Pass",
                 startBtn: "Start My Shift",
                 endBtn: "End My Shift",
@@ -162,17 +222,13 @@
             },
             HI: {
                 langBtn: "English",
-                sec1: "1. विक्रेता पंजीकरण और फ़ोटो",
+                tagline: "शोर बंद, सेवा शुरू",
+                sec1: "1. विक्रेता पंजीकरण और व्यापार",
                 vendorName: "पूरा नाम",
                 canopy: "कैनोपी बैज नंबर",
-                photos: "ठेला/स्टॉल और अपना फोटो अपलोड करें",
-                sec2: "2. आज की बिक्री चुनें",
-                preset1: "सब्जियां बास्केट",
-                preset1_sub: "आलू और प्याज",
-                preset2: "हरी सब्जियां",
-                preset2_sub: "पालक और साग",
-                preset3: "मौसमी फल",
-                preset3_sub: "सेब और संतरे",
+                category: "व्यापार श्रेणी",
+                photos: "स्टॉल/वाहन और अपना फोटो अपलोड करें",
+                sec2: "2. आज की सेवा preset चुनें",
                 sec3: "3. शिफ़्ट क्लीयरेंस और डिजिटल गेट पास",
                 startBtn: "शिफ़्ट शुरू करें",
                 endBtn: "शिफ़्ट समाप्त करें",
@@ -180,22 +236,47 @@
             }
         };
 
+        function renderPresets() {
+            const config = categoryPresets[currentCategory];
+            document.getElementById('txt-stall-photo').innerText = config.stallPhotoLabel;
+
+            const grid = document.getElementById('presetGrid');
+            grid.innerHTML = config.presets.map((p, index) => `
+                <button onclick="selectPreset('${p.id}', this)" class="preset-btn ${index === 0 ? 'bg-emerald-50 border-2 border-emerald-600' : 'bg-stone-50 border border-stone-200'} p-3 rounded-xl text-left transition hover:bg-stone-100">
+                    <div class="text-xl">${p.icon}</div>
+                    <div class="font-bold text-xs text-stone-900 mt-1">${p.title}</div>
+                    <div class="text-[10px] text-stone-500 mt-0.5">${p.sub}</div>
+                </button>
+            `).join('');
+
+            selectedPreset = config.presets[0].id;
+        }
+
+        function onCategoryChange() {
+            currentCategory = document.getElementById('tradeCategorySelect').value;
+            renderPresets();
+        }
+
+        function selectPreset(presetId, btnElement) {
+            selectedPreset = presetId;
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.className = "preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100";
+            });
+            btnElement.className = "preset-btn bg-emerald-50 border-2 border-emerald-600 p-3 rounded-xl text-left transition";
+        }
+
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'HI' : 'EN';
             const t = translations[currentLang];
 
             document.getElementById('langBtn').innerText = t.langBtn;
+            document.getElementById('txt-tagline').innerText = t.tagline;
             document.getElementById('sec1-title').innerText = t.sec1;
             document.getElementById('lbl-vendor-name').innerText = t.vendorName;
             document.getElementById('lbl-canopy').innerText = t.canopy;
+            document.getElementById('lbl-category').innerText = t.category;
             document.getElementById('lbl-photos').innerText = t.photos;
             document.getElementById('sec2-title').innerText = t.sec2;
-            document.getElementById('preset1-title').innerText = t.preset1;
-            document.getElementById('preset1-sub').innerText = t.preset1_sub;
-            document.getElementById('preset2-title').innerText = t.preset2;
-            document.getElementById('preset2-sub').innerText = t.preset2_sub;
-            document.getElementById('preset3-title').innerText = t.preset3;
-            document.getElementById('preset3-sub').innerText = t.preset3_sub;
             document.getElementById('sec3-title').innerText = t.sec3;
             document.getElementById('qr-instruction').innerText = t.qrInstr;
 
@@ -203,19 +284,11 @@
             shiftBtn.innerText = isShiftActive ? t.endBtn : t.startBtn;
         }
 
-        function selectPreset(preset, btnElement) {
-            selectedPreset = preset;
-            document.querySelectorAll('.preset-btn').forEach(btn => {
-                btn.className = "preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100";
-            });
-            btnElement.className = "preset-btn bg-emerald-50 border-2 border-emerald-600 p-3 rounded-xl text-left transition";
-        }
-
         async function toggleShift() {
             const shiftBtn = document.getElementById('shiftBtn');
             const passContainer = document.getElementById('passContainer');
             const tokenInput = document.getElementById('passTokenInput');
-            const qrContainer = document.getElementById('qrcode');
+            const qrImage = document.getElementById('qrImage');
             const vendorName = document.getElementById('vendorNameInput').value.trim() || "Raju Prasad";
             const canopyNum = parseInt(document.getElementById('canopyInput').value) || 104;
 
@@ -230,9 +303,7 @@
                         body: JSON.stringify({
                             worker_id: "V-DEL-1049",
                             name: vendorName,
-                            role: "HAWKER",
-                            category: "Fresh Vegetables",
-                            zone: "ROHINI_SEC9",
+                            category: currentCategory,
                             canopy_number: canopyNum,
                             active_bundle: selectedPreset
                         })
@@ -244,17 +315,8 @@
                     const passToken = data.gate_pass.pass_token;
 
                     tokenInput.value = passToken;
+                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(passToken)}`;
                     passContainer.classList.remove('hidden');
-
-                    qrContainer.innerHTML = "";
-                    new QRCode(qrContainer, {
-                        text: passToken,
-                        width: 160,
-                        height: 160,
-                        colorDark: "#1c1917",
-                        colorLight: "#ffffff",
-                        correctLevel: QRCode.CorrectLevel.H
-                    });
 
                     isShiftActive = true;
                     shiftBtn.innerText = translations[currentLang].endBtn;
@@ -262,7 +324,7 @@
 
                 } catch (err) {
                     console.error("Shift Error:", err);
-                    alert("Error connecting to server. Ensure FastAPI is running.");
+                    alert("Error connecting to server. Ensure FastAPI is active.");
                     shiftBtn.innerText = translations[currentLang].startBtn;
                 } finally {
                     shiftBtn.disabled = false;
@@ -271,11 +333,14 @@
                 isShiftActive = false;
                 passContainer.classList.add('hidden');
                 tokenInput.value = "";
-                qrContainer.innerHTML = "";
+                qrImage.src = "";
                 shiftBtn.innerText = translations[currentLang].startBtn;
-                shiftBtn.className = "w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-base transition shadow-sm";
+                shiftBtn.className = "w-full py-3.5 bg-[#064E3B] hover:bg-emerald-900 text-white font-bold rounded-xl text-base transition shadow-sm";
             }
         }
+
+        // Initialize presets on page load
+        renderPresets();
     </script>
 </body>
 </html>
