@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dastak • Vendor Partner Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body class="bg-stone-100 min-h-screen text-stone-900 font-sans pb-12">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                <h1 class="font-bold text-xl tracking-tight text-stone-900">दस्तक साथी <span class="text-xs font-normal text-stone-500 uppercase tracking-widest ml-1">PARTNER</span></h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="toggleLanguage()" id="langBtn" class="text-xs font-medium px-3 py-1 bg-stone-100 hover:bg-stone-200 border border-stone-300 rounded-full text-stone-700 transition">
+                    हिन्दी
+                </button>
+                <span class="text-xs font-medium px-2.5 py-1 bg-stone-100 border border-stone-200 rounded-full text-stone-600">Vendor Portal</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md mx-auto px-4 pt-4 space-y-4">
+
+        <!-- 1. Vendor Registration & Photos Card -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <div class="flex justify-between items-center border-b border-stone-100 pb-2">
+                <h2 class="font-bold text-sm text-stone-800" id="sec1-title">1. Vendor Registration & Photos</h2>
+                <span class="text-[11px] font-medium text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">Verified</span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-stone-600 font-medium mb-1" id="lbl-vendor-name">Full Name</label>
+                    <input type="text" id="vendorNameInput" value="Raju Prasad" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-stone-600 font-medium mb-1" id="lbl-canopy">Canopy Badge #</label>
+                        <input type="number" id="canopyInput" value="104" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-stone-800 font-semibold focus:outline-none focus:border-emerald-600">
+                    </div>
+                    <div>
+                        <label class="block text-stone-600 font-medium mb-1" id="lbl-status">Verification Source</label>
+                        <div class="bg-stone-50 text-stone-700 font-medium px-3 py-2 rounded-xl border border-stone-200 text-xs flex justify-between items-center">
+                            <span>e-Shram Verified</span>
+                            <span>▼</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-1">
+                    <label class="block text-stone-600 font-medium mb-1.5" id="lbl-photos">Upload Pushcart/Stall & Facial Photo</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="border-2 border-dashed border-stone-200 rounded-xl p-3 text-center bg-stone-50 flex flex-col items-center justify-center cursor-pointer hover:bg-stone-100 transition">
+                            <span class="text-xl mb-1">📷</span>
+                            <span class="font-semibold text-stone-700 text-[11px]">Stall / Cart Photo</span>
+                            <span class="text-[9px] text-stone-400">(Click to upload)</span>
+                        </div>
+                        <div class="border-2 border-dashed border-stone-200 rounded-xl p-3 text-center bg-stone-50 flex flex-col items-center justify-center cursor-pointer hover:bg-stone-100 transition">
+                            <span class="text-xl mb-1">👤</span>
+                            <span class="font-semibold text-stone-700 text-[11px]">Vendor Portrait</span>
+                            <span class="text-[9px] text-stone-400">(Click to upload)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Select Today's Produce Preset Card -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <div>
+                <h2 class="font-bold text-sm text-stone-800" id="sec2-title">2. Select Today's Produce Preset</h2>
+                <p class="text-[11px] text-stone-500 mt-0.5">One-tap baseline setup without typing line items:</p>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="selectPreset('STAPLES', this)" class="preset-btn bg-emerald-50 border-2 border-emerald-600 p-3 rounded-xl text-left transition">
+                    <div class="text-xl">🥔</div>
+                    <div class="font-bold text-xs text-stone-900 mt-1" id="preset1-title">Staples Basket</div>
+                    <div class="text-[10px] text-stone-500 mt-0.5" id="preset1-sub">Potatoes & Onions</div>
+                </button>
+                <button onclick="selectPreset('GREENS', this)" class="preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100">
+                    <div class="text-xl">🥬</div>
+                    <div class="font-bold text-xs text-stone-900 mt-1" id="preset2-title">Fresh Greens</div>
+                    <div class="text-[10px] text-stone-500 mt-0.5" id="preset2-sub">Spinach & Herbs</div>
+                </button>
+                <button onclick="selectPreset('FRUITS', this)" class="preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100">
+                    <div class="text-xl">🍓</div>
+                    <div class="font-bold text-xs text-stone-900 mt-1" id="preset3-title">Seasonal Fruits</div>
+                    <div class="text-[10px] text-stone-500 mt-0.5" id="preset3-sub">Apples & Citrus</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- 3. Shift Clearance & Digital Gate Pass Card -->
+        <section class="bg-white p-5 rounded-2xl border border-stone-200 shadow-sm space-y-3">
+            <h2 class="font-bold text-sm text-stone-800 text-center border-b border-stone-100 pb-2" id="sec3-title">
+                3. Shift Clearance & Digital Gate Pass
+            </h2>
+
+            <button id="shiftBtn" onclick="toggleShift()" class="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-base transition shadow-sm">
+                Start My Shift
+            </button>
+
+            <!-- Dynamic Pass Container -->
+            <div id="passContainer" class="hidden space-y-3 pt-2">
+                <div class="flex justify-between items-center text-xs font-medium">
+                    <span class="text-stone-500">Society Clearance Status:</span>
+                    <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-md font-mono text-[11px] font-bold">HMAC-SHA256 Cleared</span>
+                </div>
+
+                <!-- QR Display Box -->
+                <div class="bg-stone-50 p-4 rounded-2xl border border-stone-200 flex flex-col items-center justify-center space-y-2">
+                    <div id="qrcode" class="p-2.5 bg-white rounded-xl shadow-sm border border-stone-100"></div>
+                    <p class="font-semibold text-xs text-stone-700 text-center" id="qr-instruction">Show this QR code to the Guard at Gate 1</p>
+                </div>
+
+                <input type="text" id="passTokenInput" readonly class="w-full bg-stone-50 border border-stone-200 rounded-lg p-2 font-mono text-[10px] text-stone-600 focus:outline-none text-center font-bold">
+
+                <p class="text-[11px] text-stone-500 flex items-start gap-1 pt-1">
+                    💡 <span>This digital pass is automatically synced with the gate guard terminal. Keep your phone in your pocket to conserve battery.</span>
+                </p>
+            </div>
+        </section>
+
+        <footer class="text-center text-[11px] text-stone-400 pt-2">
+            CPCB 55 dB Compliant • 0% Platform Commission • Direct UPI / Cash Settlement
+        </footer>
+    </main>
+
+    <!-- JavaScript Engine -->
+    <script>
+        let isShiftActive = false;
+        let selectedPreset = 'STAPLES';
+        let currentLang = 'EN';
+
+        const translations = {
+            EN: {
+                langBtn: "हिन्दी",
+                sec1: "1. Vendor Registration & Photos",
+                vendorName: "Full Name",
+                canopy: "Canopy Badge #",
+                photos: "Upload Pushcart/Stall & Facial Photo",
+                sec2: "2. Select Today's Produce Preset",
+                preset1: "Staples Basket",
+                preset1_sub: "Potatoes & Onions",
+                preset2: "Fresh Greens",
+                preset2_sub: "Spinach & Herbs",
+                preset3: "Seasonal Fruits",
+                preset3_sub: "Apples & Citrus",
+                sec3: "3. Shift Clearance & Digital Gate Pass",
+                startBtn: "Start My Shift",
+                endBtn: "End My Shift",
+                qrInstr: "Show this QR code to the Guard at Gate 1"
+            },
+            HI: {
+                langBtn: "English",
+                sec1: "1. विक्रेता पंजीकरण और फ़ोटो",
+                vendorName: "पूरा नाम",
+                canopy: "कैनोपी बैज नंबर",
+                photos: "ठेला/स्टॉल और अपना फोटो अपलोड करें",
+                sec2: "2. आज की बिक्री चुनें",
+                preset1: "सब्जियां बास्केट",
+                preset1_sub: "आलू और प्याज",
+                preset2: "हरी सब्जियां",
+                preset2_sub: "पालक और साग",
+                preset3: "मौसमी फल",
+                preset3_sub: "सेब और संतरे",
+                sec3: "3. शिफ़्ट क्लीयरेंस और डिजिटल गेट पास",
+                startBtn: "शिफ़्ट शुरू करें",
+                endBtn: "शिफ़्ट समाप्त करें",
+                qrInstr: "गेट 1 के सुरक्षा गार्ड को यह QR कोड दिखाएं"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'HI' : 'EN';
+            const t = translations[currentLang];
+
+            document.getElementById('langBtn').innerText = t.langBtn;
+            document.getElementById('sec1-title').innerText = t.sec1;
+            document.getElementById('lbl-vendor-name').innerText = t.vendorName;
+            document.getElementById('lbl-canopy').innerText = t.canopy;
+            document.getElementById('lbl-photos').innerText = t.photos;
+            document.getElementById('sec2-title').innerText = t.sec2;
+            document.getElementById('preset1-title').innerText = t.preset1;
+            document.getElementById('preset1-sub').innerText = t.preset1_sub;
+            document.getElementById('preset2-title').innerText = t.preset2;
+            document.getElementById('preset2-sub').innerText = t.preset2_sub;
+            document.getElementById('preset3-title').innerText = t.preset3;
+            document.getElementById('preset3-sub').innerText = t.preset3_sub;
+            document.getElementById('sec3-title').innerText = t.sec3;
+            document.getElementById('qr-instruction').innerText = t.qrInstr;
+
+            const shiftBtn = document.getElementById('shiftBtn');
+            shiftBtn.innerText = isShiftActive ? t.endBtn : t.startBtn;
+        }
+
+        function selectPreset(preset, btnElement) {
+            selectedPreset = preset;
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.className = "preset-btn bg-stone-50 border border-stone-200 p-3 rounded-xl text-left transition hover:bg-stone-100";
+            });
+            btnElement.className = "preset-btn bg-emerald-50 border-2 border-emerald-600 p-3 rounded-xl text-left transition";
+        }
+
+        async function toggleShift() {
+            const shiftBtn = document.getElementById('shiftBtn');
+            const passContainer = document.getElementById('passContainer');
+            const tokenInput = document.getElementById('passTokenInput');
+            const qrContainer = document.getElementById('qrcode');
+            const vendorName = document.getElementById('vendorNameInput').value.trim() || "Raju Prasad";
+            const canopyNum = parseInt(document.getElementById('canopyInput').value) || 104;
+
+            if (!isShiftActive) {
+                shiftBtn.disabled = true;
+                shiftBtn.innerText = currentLang === 'HI' ? "पास जनरेट हो रहा है..." : "Generating Pass...";
+
+                try {
+                    const response = await fetch('/api/v1/shift/start', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            worker_id: "V-DEL-1049",
+                            name: vendorName,
+                            role: "HAWKER",
+                            category: "Fresh Vegetables",
+                            zone: "ROHINI_SEC9",
+                            canopy_number: canopyNum,
+                            active_bundle: selectedPreset
+                        })
+                    });
+
+                    if (!response.ok) throw new Error("HTTP " + response.status);
+
+                    const data = await response.json();
+                    const passToken = data.gate_pass.pass_token;
+
+                    tokenInput.value = passToken;
+                    passContainer.classList.remove('hidden');
+
+                    qrContainer.innerHTML = "";
+                    new QRCode(qrContainer, {
+                        text: passToken,
+                        width: 160,
+                        height: 160,
+                        colorDark: "#1c1917",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+
+                    isShiftActive = true;
+                    shiftBtn.innerText = translations[currentLang].endBtn;
+                    shiftBtn.className = "w-full py-3.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-base transition shadow-sm";
+
+                } catch (err) {
+                    console.error("Shift Error:", err);
+                    alert("Error connecting to server. Ensure FastAPI is running.");
+                    shiftBtn.innerText = translations[currentLang].startBtn;
+                } finally {
+                    shiftBtn.disabled = false;
+                }
+            } else {
+                isShiftActive = false;
+                passContainer.classList.add('hidden');
+                tokenInput.value = "";
+                qrContainer.innerHTML = "";
+                shiftBtn.innerText = translations[currentLang].startBtn;
+                shiftBtn.className = "w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold rounded-xl text-base transition shadow-sm";
+            }
+        }
+    </script>
+</body>
+</html>

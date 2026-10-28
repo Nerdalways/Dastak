@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-[#FAFAF9]">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Dastak • Neighborhood Transit | दस्तक</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Rozha+One&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .serif-title { font-family: 'Rozha One', serif; }
+    .cinzel { font-family: 'Cinzel', serif; }
+  </style>
+</head>
+<body class="min-h-full flex flex-col justify-between text-[#1C1917] antialiased selection:bg-[#E7E5E4]">
+
+  <!-- TOP EDITORIAL HEADER -->
+  <header class="border-b border-[#E7E5E4] bg-white sticky top-0 z-50">
+    <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse"></span>
+        <h1 class="serif-title text-2xl tracking-wide text-[#1C1917]">दस्तक</h1>
+        <span class="cinzel text-xs font-bold tracking-widest text-[#78716C] ml-1 pt-1">DASTAK</span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button id="langToggle" onclick="toggleLanguage()" class="text-xs font-semibold px-2.5 py-1 border border-[#D6D3D1] rounded bg-[#FAFAF9] text-[#44403C] hover:bg-[#F5F5F4] transition-all">
+          हिन्दी
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HYDRATED ZONE STATUS BAR -->
+  <div class="bg-[#F5F5F4] border-b border-[#E7E5E4]">
+    <div class="max-w-md mx-auto px-4 py-2 flex items-center justify-between text-xs text-[#57534E]">
+      <span class="flex items-center space-x-1.5 font-medium">
+        <svg class="w-3.5 h-3.5 text-[#78716C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span id="zoneIndicator">Zone: Rohini Sector 9</span>
+      </span>
+      <span id="txt-silent-badge" class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+        0 dB Silent
+      </span>
+    </div>
+  </div>
+
+  <!-- AUDIO EARCON INITIALIZER / PERMISSION BANNER -->
+  <div id="audioBanner" class="bg-amber-50 border-b border-amber-200 px-4 py-2.5">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="text-xs text-amber-900 leading-tight">
+        <strong id="audioTextHeader">Enable Arrival Chimes</strong><br>
+        <span id="audioTextSub" class="text-[11px] text-amber-700">Tap to hear soft bell alerts when carts enter</span>
+      </div>
+      <button onclick="unlockAndPlayEarcon()" id="btn-audio-listen" class="text-xs font-semibold bg-amber-900 text-white px-3 py-1.5 rounded shadow-sm hover:bg-amber-800 active:scale-95 transition-all">
+        Listen 🔔
+      </button>
+    </div>
+  </div>
+
+  <!-- FEED TABS (DUAL MODE) -->
+  <main class="max-w-md mx-auto w-full px-4 pt-4 pb-20 flex-1">
+    <div class="grid grid-cols-2 gap-1 p-1 bg-[#E7E5E4] rounded-lg mb-4 text-xs font-semibold">
+      <button id="tabDoorstep" onclick="switchTab('doorstep')" class="py-2 text-center rounded-md bg-white shadow-sm text-[#1C1917] transition-all">
+        <span id="txt-tab-doorstep-title">Doorstep Arrivals</span>
+        <span id="txt-tab-doorstep-sub" class="text-[10px] text-emerald-600 block font-normal">Live Carts</span>
+      </button>
+      <button id="tabStatic" onclick="switchTab('static')" class="py-2 text-center rounded-md text-[#78716C] hover:text-[#1C1917] transition-all">
+        <span id="txt-tab-static-title">Walk-In Stalls & Techs</span>
+        <span id="txt-tab-static-sub" class="text-[10px] text-[#A8A29E] block font-normal">Fixed & On-Campus</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: DOORSTEP ARRIVALS (ROAMING CARTS) -->
+    <div id="doorstepSection" class="space-y-3">
+      <!-- DYNAMIC CART CONTAINER -->
+      <div id="liveCartsContainer" class="space-y-3">
+        <!-- VENDOR CARD 1 -->
+        <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm relative overflow-hidden">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <h2 id="txt-v1-name" class="font-bold text-base text-[#1C1917]">Raju Prasad • Fresh Vegetables</h2>
+                <span class="text-[10px] font-semibold bg-stone-100 text-[#57534E] px-1.5 py-0.5 rounded border border-stone-200">#104</span>
+              </div>
+              <p id="txt-v1-sub" class="text-xs text-[#78716C] mt-0.5">e-Shram Verified • Pushcart</p>
+            </div>
+            <div class="text-right">
+              <span id="txt-v1-eta" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                8 mins away
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-3 pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-xs">
+            <div class="text-[#44403C]">
+              <span id="txt-v1-bundle-lbl" class="font-medium">Today's Bundle:</span>
+              <span id="txt-v1-bundle-val" class="text-[#78716C] ml-1">Potatoes, Onions, Tomatoes, Coriander</span>
+            </div>
+          </div>
+
+          <div class="mt-3 grid grid-cols-2 gap-2">
+            <button onclick="playChime(523.25, 'triangle')" id="btn-v1-ring" class="text-xs font-semibold py-2 px-3 border border-stone-300 rounded bg-[#FAFAF9] text-[#44403C] hover:bg-[#F5F5F4] active:scale-95 transition-all text-center">
+              Ring Chime 🔔
+            </button>
+            <button onclick="reserveOrder(document.getElementById('txt-v1-name').innerText, document.getElementById('txt-v1-bundle-val').innerText)" id="btn-v1-reserve" class="text-xs font-semibold py-2 px-3 bg-[#1C1917] text-white rounded hover:bg-[#292524] active:scale-95 transition-all text-center">
+              1-Tap Reserve
+            </button>
+          </div>
+        </div>
+
+        <!-- VENDOR CARD 2 -->
+        <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm opacity-90">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="flex items-center space-x-2">
+                <h2 id="txt-v2-name" class="font-bold text-base text-[#1C1917]">Mahesh Maurya • Seasonal Fruits</h2>
+                <span class="text-[10px] font-semibold bg-stone-100 text-[#57534E] px-1.5 py-0.5 rounded border border-stone-200">#108</span>
+              </div>
+              <p id="txt-v2-sub" class="text-xs text-[#78716C] mt-0.5">PM-SVANidhi Cleared • Pushcart</p>
+            </div>
+            <div class="text-right">
+              <span id="txt-v2-slot" class="text-xs font-bold text-stone-600 bg-stone-100 px-2 py-0.5 rounded border border-stone-200">
+                10:00 AM Slot
+              </span>
+            </div>
+          </div>
+          <div id="txt-v2-items" class="mt-3 pt-3 border-t border-[#F5F5F4] text-xs text-[#78716C]">
+            Bananas, Kinnow, Kashmiri Apples • Fresh Batch
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: WALK-IN STALLS & CAMPUS TECHNICIANS -->
+    <div id="staticSection" class="space-y-3 hidden">
+      <!-- GIG WORKER DYNAMIC CARD -->
+      <div class="border border-blue-200 rounded-lg bg-blue-50/30 p-4 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="flex items-center space-x-2">
+              <h2 id="txt-g1-name" class="font-bold text-base text-stone-900">Satish Kumar • Electrician</h2>
+              <span class="text-[10px] font-bold bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded border border-blue-200">On-Campus</span>
+            </div>
+            <p id="txt-g1-sub" class="text-xs text-stone-600 mt-0.5">Skill India Certified • Inside Tower B</p>
+          </div>
+          <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+            Available
+          </span>
+        </div>
+        <div class="mt-3 pt-3 border-t border-blue-100 flex items-center justify-between text-xs text-stone-600">
+          <span>Standard Labor: Flat ₹79–₹149</span>
+          <button onclick="alert('⚡ Contacted Satish Kumar via campus intercom / guard clearance. Zero platform commission.')" class="font-semibold text-blue-800 hover:underline">
+            Request Micro-Repair
+          </button>
+        </div>
+      </div>
+
+      <!-- STATIC SPOT 1 -->
+      <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 id="txt-s1-name" class="font-bold text-base text-[#1C1917]">Mishra Tea Stall & Nukkad</h2>
+            <p id="txt-s1-sub" class="text-xs text-[#78716C] mt-0.5">Peepal Chowk • Opposite Gate 1</p>
+          </div>
+          <span id="txt-s1-status" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            Open
+          </span>
+        </div>
+        <div class="mt-3 pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-xs text-[#57534E]">
+          <span id="txt-s1-dist">Distance: 120m (2 min walk)</span>
+          <span class="font-semibold text-[#1C1917]">Anchor #M-01</span>
+        </div>
+      </div>
+
+      <!-- STATIC SPOT 2 -->
+      <div class="border border-[#E7E5E4] rounded-lg bg-white p-4 shadow-sm">
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 id="txt-s2-name" class="font-bold text-base text-[#1C1917]">Radhey Shyam • Clothes Ironing</h2>
+            <p id="txt-s2-sub" class="text-xs text-[#78716C] mt-0.5">Gali 3 Turn • Fixed Stall</p>
+          </div>
+          <span id="txt-s2-status" class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            Available
+          </span>
+        </div>
+        <div class="mt-3 pt-3 border-t border-[#F5F5F4] flex items-center justify-between text-xs text-[#57534E]">
+          <span id="txt-s2-dist">Distance: 180m (3 min walk)</span>
+          <span class="font-semibold text-[#1C1917]">Anchor #M-04</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM COMPLIANCE FOOTER -->
+  <footer class="border-t border-[#E7E5E4] bg-white py-3 text-center text-[11px] text-[#78716C]">
+    <div class="max-w-md mx-auto px-4 flex justify-between items-center">
+      <span id="txt-footer-cpcb">CPCB 55 dB compliant • 0% take-rate</span>
+      <span id="txt-footer-pay" class="font-medium text-[#1C1917]">Direct UPI / Cash</span>
+    </div>
+  </footer>
+
+  <!-- NATIVE WEB AUDIO SYNTHESIZER & COMPLETE BILINGUAL LOGIC -->
+  <script>
+    let audioCtx = null;
+    let currentLang = 'en';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const zone = urlParams.get('zone') || 'ROHINI_SEC9';
+
+    const I18N = {
+      en: {
+        langBtn: "हिन्दी",
+        zonePrefix: "Zone: ",
+        silentBadge: "0 dB Silent",
+        audioHeader: "Enable Arrival Chimes",
+        audioSub: "Tap to hear soft bell chimes when carts enter",
+        audioListenBtn: "Listen 🔔",
+        tabDoorstepTitle: "Doorstep Arrivals",
+        tabDoorstepSub: "Live Carts",
+        tabStaticTitle: "Walk-In Stalls & Techs",
+        tabStaticSub: "Fixed & On-Campus",
+        v1Name: "Raju Prasad • Fresh Vegetables",
+        v1Sub: "e-Shram Verified • Pushcart",
+        v1Eta: "8 mins away",
+        v1BundleLbl: "Today's Bundle:",
+        v1BundleVal: "Potatoes, Onions, Tomatoes, Coriander",
+        v1RingBtn: "Ring Chime 🔔",
+        v1ReserveBtn: "1-Tap Reserve",
+        v2Name: "Mahesh Maurya • Seasonal Fruits",
+        v2Sub: "PM-SVANidhi Cleared • Pushcart",
+        v2Slot: "10:00 AM Slot",
+        v2Items: "Bananas, Kinnow, Kashmiri Apples • Fresh Batch",
+        g1Name: "Satish Kumar • Electrician",
+        g1Sub: "Skill India Certified • Inside Tower B",
+        s1Name: "Mishra Tea Stall & Nukkad",
+        s1Sub: "Peepal Chowk • Opposite Gate 1",
+        s1Status: "Open",
+        s1Dist: "Distance: 120m (2 min walk)",
+        s2Name: "Radhey Shyam • Clothes Ironing",
+        s2Sub: "Gali 3 Turn • Fixed Stall",
+        s2Status: "Available",
+        s2Dist: "Distance: 180m (3 min walk)",
+        footerCpcb: "CPCB 55 dB compliant • 0% take-rate",
+        footerPay: "Direct UPI / Cash",
+        reserveAlert: "✅ RESERVED WITH "
+      },
+      hi: {
+        langBtn: "English",
+        zonePrefix: "इलाका: ",
+        silentBadge: "0 dB शांत",
+        audioHeader: "आगमन घंटी चालू करें",
+        audioSub: "ठेले आने पर मधुर घंटी सुनने के लिए टैप करें",
+        audioListenBtn: "सुनिए 🔔",
+        tabDoorstepTitle: "घर पर आएंगे",
+        tabDoorstepSub: "चलते ठेले",
+        tabStaticTitle: "अभी मिलेंगे व कारीगर",
+        tabStaticSub: "स्थायी व परिसर में",
+        v1Name: "राजू प्रसाद • ताज़ा सब्ज़ी",
+        v1Sub: "ई-श्रम सत्यापित • ठेला",
+        v1Eta: "8 मिनट दूर",
+        v1BundleLbl: "आज का बंडल:",
+        v1BundleVal: "आलू, प्याज़, टमाटर, धनिया",
+        v1RingBtn: "घंटी बजाएं 🔔",
+        v1ReserveBtn: "रोकें (1-Tap Reserve)",
+        v2Name: "महेश मौर्या • मौसमी फल",
+        v2Sub: "PM-स्वनिधि स्वीकृत • ठेला",
+        v2Slot: "10:00 AM स्लॉट",
+        v2Items: "केले, किन्नू, कश्मीरी सेब • ताज़ा लॉट",
+        g1Name: "सतीश कुमार • इलेक्ट्रीशियन",
+        g1Sub: "स्किल इंडिया प्रमाणित • टावर बी में उपलब्ध",
+        s1Name: "मishra Tea Stall एवं नुक्कड़",
+        s1Sub: "पीपल चौक • गेट 1 के सामने",
+        s1Status: "खुला है",
+        s1Dist: "दूरी: 120 मीटर (2 मिनट पैदल)",
+        s2Name: "राधे श्याम • कपड़े प्रेस / इस्त्री",
+        s2Sub: "गली 3 मोड़ • स्थायी दुकान",
+        s2Status: "उपलब्ध",
+        s2Dist: "दूरी: 180 मीटर (3 मिनट पैदल)",
+        footerCpcb: "CPCB 55 dB प्रमाणित • 0% कमीशन",
+        footerPay: "सीधा भुगतान (UPI / नकद)",
+        reserveAlert: "✅ आपका ऑर्डर सुरक्षित किया गया: "
+      }
+    };
+
+    function renderLanguage() {
+      const d = I18N[currentLang];
+      document.getElementById('langToggle').textContent = d.langBtn;
+      document.getElementById('zoneIndicator').textContent = d.zonePrefix + zone.replace('_', ' ');
+      document.getElementById('txt-silent-badge').textContent = d.silentBadge;
+      document.getElementById('audioTextHeader').textContent = d.audioHeader;
+      document.getElementById('audioTextSub').textContent = d.audioSub;
+      document.getElementById('btn-audio-listen').textContent = d.audioListenBtn;
+      document.getElementById('txt-tab-doorstep-title').textContent = d.tabDoorstepTitle;
+      document.getElementById('txt-tab-doorstep-sub').textContent = d.tabDoorstepSub;
+      document.getElementById('txt-tab-static-title').textContent = d.tabStaticTitle;
+      document.getElementById('txt-tab-static-sub').textContent = d.tabStaticSub;
+      document.getElementById('txt-v1-name').textContent = d.v1Name;
+      document.getElementById('txt-v1-sub').textContent = d.v1Sub;
+      document.getElementById('txt-v1-eta').textContent = d.v1Eta;
+      document.getElementById('txt-v1-bundle-lbl').textContent = d.v1BundleLbl;
+      document.getElementById('txt-v1-bundle-val').textContent = d.v1BundleVal;
+      document.getElementById('btn-v1-ring').textContent = d.v1RingBtn;
+      document.getElementById('btn-v1-reserve').textContent = d.v1ReserveBtn;
+      document.getElementById('txt-v2-name').textContent = d.v2Name;
+      document.getElementById('txt-v2-sub').textContent = d.v2Sub;
+      document.getElementById('txt-v2-slot').textContent = d.v2Slot;
+      document.getElementById('txt-v2-items').textContent = d.v2Items;
+      document.getElementById('txt-g1-name').textContent = d.g1Name;
+      document.getElementById('txt-g1-sub').textContent = d.g1Sub;
+      document.getElementById('txt-s1-name').textContent = d.s1Name;
+      document.getElementById('txt-s1-sub').textContent = d.s1Sub;
+      document.getElementById('txt-s1-status').textContent = d.s1Status;
+      document.getElementById('txt-s1-dist').textContent = d.s1Dist;
+      document.getElementById('txt-s2-name').textContent = d.s2Name;
+      document.getElementById('txt-s2-sub').textContent = d.s2Sub;
+      document.getElementById('txt-s2-status').textContent = d.s2Status;
+      document.getElementById('txt-s2-dist').textContent = d.s2Dist;
+      document.getElementById('txt-footer-cpcb').textContent = d.footerCpcb;
+      document.getElementById('txt-footer-pay').textContent = d.footerPay;
+    }
+
+    function toggleLanguage() {
+      currentLang = (currentLang === 'en') ? 'hi' : 'en';
+      renderLanguage();
+    }
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playChime(freq = 523.25, type = 'sine') {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.4, audioCtx.currentTime + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 1.25);
+    }
+
+    function unlockAndPlayEarcon() {
+      playChime(523.25, 'triangle');
+      document.getElementById('audioBanner').classList.add('hidden');
+    }
+
+    function switchTab(tab) {
+      const doorstepSec = document.getElementById('doorstepSection');
+      const staticSec = document.getElementById('staticSection');
+      const tabDoorstep = document.getElementById('tabDoorstep');
+      const tabStatic = document.getElementById('tabStatic');
+
+      if (tab === 'doorstep') {
+        doorstepSec.classList.remove('hidden');
+        staticSec.classList.add('hidden');
+        tabDoorstep.classList.add('bg-white', 'shadow-sm', 'text-[#1C1917]');
+        tabDoorstep.classList.remove('text-[#78716C]');
+        tabStatic.classList.remove('bg-white', 'shadow-sm', 'text-[#1C1917]');
+        tabStatic.classList.add('text-[#78716C]');
+      } else {
+        doorstepSec.classList.add('hidden');
+        staticSec.classList.remove('hidden');
+        tabStatic.classList.add('bg-white', 'shadow-sm', 'text-[#1C1917]');
+        tabStatic.classList.remove('text-[#78716C]');
+        tabDoorstep.classList.remove('bg-white', 'shadow-sm', 'text-[#1C1917]');
+        tabDoorstep.classList.add('text-[#78716C]');
+      }
+    }
+
+    function reserveOrder(vendor, item) {
+      playChime(659.25, 'sine');
+      const d = I18N[currentLang];
+      alert(d.reserveAlert + vendor + '\n\n' + item + '\n\n' + (currentLang === 'en' ? 'Pay directly in-person via UPI or cash.' : 'सामान देखकर ठेले पर सीधे UPI या नकद भुगतान करें।'));
+    }
+
+    renderLanguage();
+  </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+﻿import time
+from typing import Any
+
+ACTIVE_WORKERS: dict[str, dict[str, Any]] = {}
+LANE_DEMAND_POOLS: dict[str, list[dict[str, Any]]] = {}
+
+
+def register_active_worker(
+    worker_id: str,
+    name: str,
+    role: str,
+    category: str,
+    canopy_number: int | None,
+    h3_res9: str,
+    zone: str,
+    rate_card: list[dict[str, str]] | None = None,
+    active_bundle: str = "STAPLES"
+) -> dict[str, Any]:
+    record = {
+        "worker_id": worker_id,
+        "name": name,
+        "role": role,
+        "category": category,
+        "canopy_number": canopy_number,
+        "h3_res9": h3_res9,
+        "zone": zone,
+        "rate_card": rate_card or [],
+        "active_bundle": active_bundle,
+        "status": "AVAILABLE",
+        "last_active": int(time.time()),
+    }
+    ACTIVE_WORKERS[worker_id] = record
+    return record
+
+
+def unregister_worker(worker_id: str) -> bool:
+    if worker_id in ACTIVE_WORKERS:
+        del ACTIVE_WORKERS[worker_id]
+        return True
+    return False
+
+
+def get_live_zone_feed(zone: str) -> dict[str, Any]:
+    now = int(time.time())
+    active_carts = []
+    active_techs = []
+
+    for w in ACTIVE_WORKERS.values():
+        if w["zone"] == zone:
+            if now - w["last_active"] < 14400:
+                if w["role"] == "HAWKER":
+                    active_carts.append({
+                        "id": w["worker_id"],
+                        "name": w["name"],
+                        "category": w["category"],
+                        "canopy": w["canopy_number"] or 104,
+                        "bundle": w["active_bundle"],
+                        "status": "In Transit (~6-8 min away)",
+                        "eta_minutes": 8,
+                        "h3_cell": w["h3_res9"]
+                    })
+                elif w["role"] == "GIG_TECH":
+                    active_techs.append({
+                        "id": w["worker_id"],
+                        "name": w["name"],
+                        "trade": w["category"],
+                        "location": "On-Campus / Tower Lobby",
+                        "status": "Available",
+                        "rate_card": w["rate_card"]
+                    })
+
+    static_anchors = [
+        {
+            "name": "Mishra Tea Stall & Nukkad",
+            "landmark": "Peepal Chowk • Opposite Gate 1",
+            "status": "Open",
+            "distance_m": 120,
+            "anchor_id": "M-01",
+            "map_url": "https://www.google.com/maps/dir/?api=1&destination=28.719482,77.108215"
+        },
+        {
+            "name": "Radhey Shyam • Clothes Ironing",
+            "landmark": "Gali 3 Turn • Fixed Stall",
+            "status": "Available",
+            "distance_m": 180,
+            "anchor_id": "M-04",
+            "map_url": "https://www.google.com/maps/dir/?api=1&destination=28.719600,77.108500"
+        }
+    ]
+
+    return {
+        "zone": zone,
+        "roaming_carts": active_carts,
+        "gig_technicians": active_techs,
+        "static_anchors": static_anchors,
+        "timestamp": now
+    }
+
+
+def allocate_order_to_lane(
+    lane_id: str,
+    zone: str,
+    household_id: str,
+    amount: float,
+    item_bundle: str
+) -> dict[str, Any]:
+    if lane_id not in LANE_DEMAND_POOLS:
+        LANE_DEMAND_POOLS[lane_id] = []
+
+    order = {
+        "household_id": household_id,
+        "amount": amount,
+        "item_bundle": item_bundle,
+        "created_at": int(time.time())
+    }
+    LANE_DEMAND_POOLS[lane_id].append(order)
+
+    total_val = sum(o["amount"] for o in LANE_DEMAND_POOLS[lane_id])
+    household_count = len({o["household_id"] for o in LANE_DEMAND_POOLS[lane_id]})
+
+    assigned_vendor = None
+    for w in ACTIVE_WORKERS.values():
+        if w["zone"] == zone and w["role"] == "HAWKER":
+            assigned_vendor = w
+            break
+
+    if total_val >= 150.0 or household_count >= 3:
+        dispatch_status = "LANE_DETOUR_APPROVED"
+        action = f"Vendor dispatched down {lane_id}"
+        audio_cue = (
+            f"{assigned_vendor['name'] if assigned_vendor else 'भैया'}: "
+            f"{lane_id} में {household_count} घरों का ₹{int(total_val)} का बंडल तैयार रखें।"
+        )
+    else:
+        dispatch_status = "ANCHOR_PICKUP_RESERVED"
+        action = f"Routing order to Main Nukkad Anchor (need ₹{int(150 - total_val)} more for doorstep cart detour)"
+        audio_cue = f"{lane_id} नुक्कड़ पर ₹{int(amount)} का आर्डर सुरक्षित किया गया।"
+
+    return {
+        "lane_id": lane_id,
+        "zone": zone,
+        "total_lane_demand": total_val,
+        "households_pooled": household_count,
+        "dispatch_status": dispatch_status,
+        "action": action,
+        "audio_cue_vernacular": audio_cue,
+        "assigned_vendor": assigned_vendor["name"] if assigned_vendor else "Next Available Cart"
+    }
